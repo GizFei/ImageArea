@@ -1,0 +1,60 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Test
+        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body
+        div(style="background: #00B7FF")
+            .container.px-0
+                .navbar.navbar-expand-lg.navbar-dark(style='background: #00B7FF;')
+                    a.navbar-brand(href='#') Navbar
+                    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#nc')
+                        span.navbar-toggler-icon
+                    #nc.collapse.navbar-collapse
+                        ul.navbar-nav.mr-auto
+                            li.nav-item(class=(title == 'Members' ? 'active' : ""))
+                                a.nav-link(href='/') 首页
+                            if !user
+                                li.nav-item(class=(title == 'Register' ? 'active' : ""))
+                                    a.nav-link(href='/users/register') 注册
+                                li.nav-item(class=(title == 'Login' ? 'active' : ""))
+                                    a.nav-link(href='/users/login') 登录
+                            li.nav-item.dropdown
+                                a#ndt.nav-link.dropdown-toggle(data-toggle='dropdown') Drop Down
+                                .dropdown-menu
+                                    a.dropdown-item(href='#') Action1
+                                    a.dropdown-item(href='#') Action2
+                                    a.dropdown-item(href='#') Action3
+                        if user
+                            ul.navbar-nav.mr-sm-2
+                                li
+                                    a.nav-link(href='/users/logout') 退出
+        .container
+            != messages()
+            block content
+        script(src='/javascripts/jquery-3.3.1.min.js')
+        script(src='/javascripts/bootstrap.min.js')
+
+
+            //    form(method='post', action='/users/register', enctype='multipart/form-data')
+            //        .form-group
+            //            label Name
+            //            input.form-control(name='name', type='text', placeholder='Enter name')
+            //        .form-group
+            //            label Email
+            //            input.form-control(name='email', type='email', placeholder='Enter email')
+            //        .form-group
+            //            label Username
+            //            input.form-control(name='username', type='text', placeholder='Enter username')
+            //        .form-group
+            //            label Password
+            //            input.form-control(name='password', type='password', placeholder='Enter password')
+            //        .form-group
+            //            label Confirm Password
+            //            input.form-control(name='password2' type='password', placeholder='Enter password again')
+            //        .form-group
+            //            label Profile Image
+            //            input.form-control(name='profileimage' type='file')
+            //        input.btn.btn-primary(type="submit", name="submit", value='Register')

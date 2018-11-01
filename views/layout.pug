@@ -1,0 +1,49 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Test
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css")
+        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/mdb.min.css')
+        link(rel='stylesheet', href='/stylesheets/animate.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body
+        nav.navbar.navbar-expand-lg.navbar-dark.primary-color.py-2.px-4.sticky-top
+            a.navbar-brand(href='/') ImageArea
+            button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNav', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
+                span.navbar-toggler-icon
+            #navbarNav.collapse.navbar-collapse
+                ul.navbar-nav.my-0.mr-auto
+                    li.nav-item(class=(active == 'Home' ? 'active' : ''))
+                        a.nav-link(href='/') 首页
+                    li.nav-item.mx-2(class=(active == 'Features' ? 'active' : ''))
+                        a.nav-link(href='#') 个人
+                    li.nav-item(class=(active == 'Pricing' ? 'active' : ''))
+                        a.nav-link(href='#') 群组
+                form.form-inline.ml-auto.mr-3
+                    .md-form.my-0
+                        input.form-control.mr-sm-2(type='text', name="search" placeholder='搜索...', aria-label='Search')
+                if !user
+                    ul.navbar-nav.my-0.mr-sm-3
+                        li.nav-item(class=(active == 'Login' ? 'active' : ''))
+                            a.nav-link(href='/users/login') 登录
+                        li.nav-item(class=(active == 'Register' ? 'active' : ''))
+                            a.nav-link(href='/users/register') 注册
+                if user
+                    ul.navbar-nav.my-0
+                        li.nav-item.dropdown
+                            a#navbarDropdownMenuLink.nav-link(data-toggle='dropdown', aria-haspopup='true', aria-expanded='true')
+                                img.rounded-circle(width='44px', height='44px', src=profile)
+                            .dropdown-menu.dropdown-primary.dropdown-menu-right.animated.fadeInDown.faster(aria-labelledby='navbarDropdownMenuLink')
+                                a.dropdown-item(href='#') 我的信息
+                                a.dropdown-item(href="#") 我的会员
+                                a.dropdown-item(href='/users/logout') 退出账号
+        .container.my-3
+            != messages()
+            block content
+        script(src='/javascripts/jquery-3.3.1.min.js')
+        script(src='/javascripts/bootstrap.min.js')
+        script(src='/javascripts/mdb.min.js')
+        script(src='/javascripts/popper.min.js')
+        script(src='/javascripts/bootstrap-material-design.js')

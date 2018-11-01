@@ -1,0 +1,45 @@
+ul.success li{
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #d6e9c6;
+  border-radius: 4px;
+  color: #3c763d;
+  background-color: #dff0d8;
+}
+
+ul{
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+ul.error li{
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ebccd1;
+  border-radius: 4px;
+  color: #a94442;
+  background-color: #f2dede;
+}
+
+ul.info li{
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #33b5e5;
+    border-radius: 4px;
+    color: #FFF;
+    background-color: #33b5e5;
+}
+
+.btn-rounded{
+    border-radius: 24px;
+}
+
+#sign-up-btn:hover, #sign-in-btn:hover{
+    background: #33b5e5 !important;
+    color: white !important;
+}
+
+.custom-file-label::after {
+    content: "浏览" !important;
+}

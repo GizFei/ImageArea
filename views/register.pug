@@ -1,0 +1,48 @@
+extends layout
+
+block content
+    ul(style="padding: 0")
+        if errors
+            each error, i in errors
+                li.alert.alert-danger(style="list-style:none") #{error.msg}
+    .row.my-5
+        .col-md-6.mr-auto.ml-auto.animated.zoomIn
+            .card
+                h5.card-header.info-color.white-text.text-center.py-4
+                    strong 注册
+                // Card content
+                .card-body.px-lg-5.pt-0
+                    // Form
+                    form(style='color: #757575;', method='post', action='/users/register', enctype='multipart/form-data')
+                        // Username
+                        .md-form(style='padding-top: 8px;')
+                            i.fa.fa-user.prefix
+                            input#username.form-control(type='text', name='username')
+                            label(for='username') 用户名
+                        // E-mail
+                        .md-form(style='padding-top: 8px;')
+                            i.fa.fa-envelope.prefix(style='font-size: 24px')
+                            input#email.form-control(type='email', name='email')
+                            label(for='email') 电子邮箱
+                        // Password
+                        .md-form(style='padding-top: 8px;')
+                            i.fa.fa-lock.prefix
+                            input#psd.form-control(type='password', name='password')
+                            label(for='psd') 密码
+                        .md-form(style='padding-top: 8px;')
+                            i.fa.fa-lock.prefix
+                            input#psdAgain.form-control(type='password', name='password2')
+                            label(for='psdAgain') 确认密码
+                        .input-group.my-4.pt-3
+                            .custom-file
+                                input#profile.custom-file-input(type='file', name='profile', accept='image/gif,image/tiff, image/x-png, image/jpeg')
+                                label#profile-label.custom-file-label(for='profile') 上传头像
+                        // Sign up button
+                        button#sign-up-btn.my-5.btn.btn-rounded.btn-outline-info.btn-block.waves-effect.z-depth-0(type='submit') 注册
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script.
+        $("#profile")[0].onchange = function () {
+            if (this.files != null) {
+                $("#profile-label")[0].innerHTML = this.files[0].name;
+            }
+        }

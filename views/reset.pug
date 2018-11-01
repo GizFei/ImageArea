@@ -1,0 +1,39 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title Test
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', type='text/css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/mdb.min.css')
+        link(rel='stylesheet', href='/stylesheets/style.css')
+    body
+        ul.my-3.mx-5(style="padding: 0")
+            if errors
+                each error, i in errors
+                    li.alert.alert-danger(style="list-style:none") #{error.msg}
+        .container
+            .row.my-5
+                .col-md-6.mr-auto.ml-auto.animated.zoomIn
+                    // Material form login
+                    .card
+                        h5.card-header.info-color.white-text.text-center.py-4
+                            strong Image Area重置密码
+                        // Card content
+                        .card-body.px-lg-5.pt-1
+                            // Form
+                            form(style='color: #757575;', method='POST')
+                                .md-form
+                                    i.fa.fa-lock.prefix
+                                    input#password.form-control(type='password', name='password')
+                                    label(for='password') 密码
+                                .md-form
+                                    i.fa.fa-lock.prefix
+                                    input#password2.form-control(type='password', name='confirm-password')
+                                    label(for='password2') 确认密码
+                                button#sign-in-btn.btn.btn-outline-info.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 更新密码
+        script(src='/javascripts/jquery-3.3.1.min.js')
+        script(src='/javascripts/bootstrap.min.js')
+        script(src='/javascripts/mdb.min.js')
+        script(src='/javascripts/popper.min.js')
+        script(src='/javascripts/bootstrap-material-design.js')
