@@ -1,0 +1,81 @@
+extends layout
+
+block content
+    .container
+        .row
+            .input-group.m-3
+                .custom-file
+                    input#files.custom-file-input(type='file', multiple='', accept='image/x-png, image/jpeg')
+                    label#profile-label.custom-file-label(for='profile') 选择多张图片
+        // 预览图片
+        #previewContainer.row
+        // 信息编辑
+        .row
+            .col-md-12.imageInfo.hide.animated.fadeInDown
+                .row(style='z-index: 2; position: relative;')
+                    .col-sm-6.mt-2
+                        .md-form.my-1
+                            i.fa.fa-photo.prefix
+                            input#name0.form-control(type='text')
+                            label(for='name0') 照片名
+                    .col-sm-6.text-right.pr-4
+                        select#albummodel.selectpicker(title='选择相册')
+                            if albums
+                                each album, i in albums
+                                    option #{album}
+                #tagmodel.row.p-3.my-3.pr-0.tag-container(style='z-index: 1; position: relative;')
+                    p.pt-2.m-0 选择标签：
+                    label.btn.btn-primary.btn-sm(data-toggle='modal', data-target='#newTagModal')
+                        i.fa.fa-plus
+                    if tags
+                        each tag, i in tags
+                            label.btn.btn-light.z-depth-0.btn-sm.tag #{tag}
+                .row.text-center.mx-1
+                    .col-md-6.border.pt-3
+                        .row.text-left
+                            .col-md-8.mt-1
+                                label 是否允许商用：
+                            .col-md-4.text-right
+                                label.bs-switch
+                                    input.business(type='checkbox')
+                                    span.slider.round
+                    .col-md-6.border.pt-3
+                        .row.text-left
+                            .col-md-8.mt-1
+                                label 是否允许下载：
+                            .col-md-4.text-right
+                                label.bs-switch
+                                    input.download(type='checkbox')
+                                    span.slider.round
+            .col-md-12.text-center.instruction
+                p(style='position: relative; top: 40%; font-size: 24px; color: #CCC;')
+                    i.fa.fa-angle-double-up
+                    |  点击上传表单区域添加图片
+        #newTagModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        h5#exampleModalLabel.modal-title 添加新的标签
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                    .modal-body
+                        input#tag.form-control(type='text', name='tag', placeholder='输入标签名...')
+                    .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') 取消
+                        button#tag-new-btn.btn.btn-primary(type='button') 添加
+        .row.my-2
+            button#submit.btn.btn-default.btn-rounded.ml-auto.mr-3.mt-4(style='width: 125px') 批量上传
+        #previewModal.hide
+            .col-md-4.mb-3
+                .card.animated.fadeIn(data-num='0', style='overflow: hidden;')
+                    // Card image
+                    .view.overlay
+                        img.card-img-top.preview(src='/images/photo.jpg', alt='Card image cap', style='height: 240px; object-fit: cover;')
+                    .deleteArea.hide.animated
+                        i.fa.fa-trash-o.deleteIcon
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src="/javascripts/bootstrap-select.min.js")
+    script(src="/javascripts/customize/batchupload.js")

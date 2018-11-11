@@ -1,0 +1,125 @@
+extends layout
+
+block content
+    // 主体部分
+    section.info.mb-5
+        .section-header.fadeInDown.animated(style='animation-name: fadeInDown;')
+            h2.h1-responsive.font-weight-bold.text-center.my-4 用户信息
+            p.text-center.w-responsive.mx-auto.mb-5
+        .container-fluid.px-5
+            .row
+                .col-3.pr-4.fadeInLeft.animated(style='animation-name: fadeInLeft;')
+                    .row
+                        .col-md-4
+                        .col-md-8
+                            i#edit-profile.fa.fa-edit.mr-3(title='更改头像')
+                            img.img-fluid.preview(src=profile)
+                    #form-profile.row.mt-3.hide.animated.fadeInDown
+                        .col-md-2
+                        .col-md-10
+                            form#profile-form(method='post', action='/personal/info/profile', enctype='multipart/form-data')
+                                .input-group
+                                    .custom-file
+                                        input#profile.custom-file-input(type='file', name='profile', accept='image/png, image/jpeg')
+                                        label#profile-label.custom-file-label(for='profile') 选择头像
+                        .col-md-12.text-right
+                            a#profile-form-cancel.btn.btn-primary.btn-sm.m-0.mt-2 取消
+                            a#profile-form-submit.btn.btn-primary.btn-sm.m-0.mt-2 提交
+                    .row
+                        .col-md-4
+                            // 用户名
+                        .col-md-8.text-right.mt-3(style='font-size: 20px')
+                            p #{userInfo.username}
+                // 个人信息
+                .col-6.fadeInUp.animated(style='animation-name: fadeInUp;')
+                    .p-4.z-depth-1(data-spy='scroll', data-target='#list-example', data-offset='0')
+                        h4#list-item-1.mb-3 基本信息
+                        form#form-1(name='basic-info', method='post', target='targetFrame1')
+                            .row
+                                .col-md-12
+                                    // 用户邮箱
+                                    p
+                                        span.badge.cyan.z-depth-0.mr-2 邮箱
+                                        | #{userInfo.email}
+                            .row
+                                .col-md-12
+                                    span.badge.cyan.z-depth-0.mr-2.align-middle 我的标签
+                                    //each tag, i in userInfo.tags
+                                        // label.btn.btn-light.z-depth-0.btn-sm.disabled #{tag}
+                            .row.mt-3
+                                .col-md-6
+                                    span.badge.cyan.z-depth-0.mr-2 已用总量
+                                    .progress.mt-2(style='height: 24px')
+                                        .progress-bar(role='progressbar', style='width: 7.5%', aria-valuenow='25', aria-valuemin='0', aria-valuemax='100') #{userInfo.capacityused}/#{userInfo.capacity}
+                                .col-md-6
+                                    span.badge.cyan.z-depth-0.mr-2 已用私密量
+                                    .progress.mt-2(style='height: 24px')
+                                        .progress-bar(role='progressbar', style='width: 25%', aria-valuenow='25', aria-valuemin='0', aria-valuemax='100') #{userInfo.privateused}/#{userInfo.privatecapacity}
+                            iframe(name='targetFrame1', style='display:none')
+                        // 表单1
+                        h4#list-item-2.mt-4.mb-3 个人说明
+                        form#form-2(name='personal-des', method='post', target='targetFrame2')
+                            .row
+                                .col-md-12
+                                    textarea#intro-area.border.border-primary(style='width: 100%; height: 180px; resize: none;', placeholder='写点什么...', disabled='') #{userInfo.introduction}
+                                .col-md-12.mb-4.text-right
+                                    .btn-group(role='group', aria-label='Basic example')
+                                        button#intro-cancel-btn.btn.btn-primary.hide.animated.fadeInRight.faster(type='button') 取消
+                                        button#intro-submit-btn.btn.btn-primary.hide.animated.fadeInRight.faster(type='button') 提交
+                                        button#intro-edit-btn.btn.btn-primary(type='button') 编辑
+                            iframe(name='targetFrame2', style='display:none')
+                        // 表单2
+                        h4#list-item-3.mb-3
+                            | 我的会员
+                            span#vip-open.btn.btn-primary.btn-sm.ml-3 开通会员
+                        form#form-3(name='item-3', method='post', target='targetFrame3')
+                            .row
+                                .col-md-12
+                                    span.badge.cyan.z-depth-0.mr-2 自定义标签
+                                    label.btn.btn-light.z-depth-0.disabled.px-3
+                                        | 测试标签
+                                        i.fa.fa-times.ml-3.deleteTag
+                                    label.btn.btn-light.z-depth-0.disabled.px-3
+                                        | 测试标签
+                                        i.fa.fa-times.ml-3.deleteTag
+                                    label.btn.btn-light.z-depth-0.disabled.px-3
+                                        | 测试标签
+                                        i.fa.fa-times.ml-3.deleteTag
+                                    label.btn.btn-primary.z-depth-0(class=(userInfo.vip ? "" : "disabled"))
+                                        span.fa.fa-plus(style='color: white;')
+                                .col-md-12.mt-2.border.border-gray
+                                    .row
+                                        .col-md-2.pt-2
+                                            span.badge.cyan.z-depth-0.mr-2 我的私密量
+                                            span#private-value.float-right.pr-2.mt-1 #{userInfo.privatecapacity}
+                                        .col-md-1.p-0.text-center.pt-2 0
+                                        .col-md-8.pt-2.p-0
+                                            input#private-range.custom-range(type='range', max='1000', value='300', min='0', disabled='')
+                                        .col-md-1.p-0.pt-2.text-center #{userInfo.capacity}
+                                    .row
+                                        .col-md-12.mb-4.text-right
+                                            .btn-group(role='group', aria-label='Basic example')
+                                                button#private-cancel-btn.btn.btn-primary.hide.animated.fadeInRight.faster(type='button') 取消
+                                                button#private-submit-btn.btn.btn-primary.hide.animated.fadeInRight.faster(type='button') 提交
+                                                button#private-edit-btn.btn.btn-primary(type='button', class=(userInfo.vip ? "" : "disabled")) 编辑
+                            iframe(name='targetFrame3', style='display:none')
+                        // 表单3
+                        // 个人信息
+                .col-md-3.text-center.fadeInRight.animated(style='animation-name: fadeInRight;')
+                    h4.h4-responsive.font-weight-bold.text-center.my-5 Connect our group
+                    ul.list-unstyled.mb-0
+                        li
+                            i.fa.fa-map-marker.fa-2x
+                            p Hangzhou, ZJU
+                        li
+                            i.fa.fa-phone.mt-4.fa-2x
+                            p + 86 *** **** ****
+                        li
+                            i.fa.fa-envelope.mt-4.fa-2x
+                            p xxx@zju.edu.cn
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/customize/userinfo.js')

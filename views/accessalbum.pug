@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    .container
+        // Navbar
+        nav.navbar.navbar-light.light-blue.lighten-4.my-4(data-toggle='collapse', data-target='#album-category', style='cursor:pointer')
+            // Navbar brand
+            a.navbar-brand(href='javascript:;') #{username}的相册
+        .row
+            // Card Wider
+            if albums
+                each album, i in albums
+                    .col-md-4.my-0
+                        .card-cascade.wider(style='background-color: transparent;')
+                            // Card image
+                            .view.view-cascade.overlay.z-depth-2(style=' border-radius: 8px;')
+                                img.card-img-top(src=album.coverUrl, alt='Card image cap', style='object-fit: contain; height: 240px')
+                                a(href=album.albumurl)
+                                    .mask.rgba-white-slight
+                            // Card content
+                            .card.card-body.text-left.mx-2(style='z-index: -1;')
+                                // Title
+                                h4.card-title
+                                    i.fa.fa-photo.mr-3.align-middle(style='color: mediumpurple')
+                                    strong #{album.albumname}
+                                    i.fa.fa-angle-double-right(style='position: absolute;right:8%; font-size: 28px; cursor:pointer')
+            // Card Wider
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/bootstrap-select.min.js')

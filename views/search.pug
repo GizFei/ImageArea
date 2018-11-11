@@ -1,0 +1,109 @@
+extends layout
+
+block content
+    // 主体部分
+    // 搜索栏
+    .row
+        .input-group.search.px-5
+            .input-group-prepend
+                span#basic-text1.input-group-text.cyan.lighten-2
+                    i.fa.fa-search.text-white(aria-hidden='true')
+            input#fillPH1.form-control.my-0.h-3(type='text', placeholder='', aria-label='Search')
+    // 搜索栏
+    // TABS
+    .tabs
+        ul#myTab.nav.nav-tabs.mt-5(role='tablist')
+            li.nav-item.home-carousel-li
+                a#images-tab.nav-link.active(data-toggle='tab', href='#IMAGES', role='tab', aria-controls='IMAGES', aria-selected='true') IMAGES
+            li.nav-item.home-carousel-li
+                a#users-tab.nav-link(data-toggle='tab', href='#USERS', role='tab', aria-controls='USERS', aria-selected='false') USERS
+    // TABS
+    // 卡片
+    #myTabContent.tab-content
+        // 图像
+        #IMAGES.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='home-tab')
+            .row.pl-5.pr-5.mr-5.ml-5
+                .col-md-4.pl-5.pr-5
+                    .card.teal.darken-3
+                        .view
+                            img.card-img-top(style="height: 420px; object-fit: cover" src='https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(131).jpg', alt='photo')
+                            a(href='javascript:;')
+                                .mask.rgba-white-slight
+                        .card-body.text-center
+                            h4.card-title.white-text 图像名
+                            a.btn.btn-outline-white.btn-md.waves-effect.owner(href='#') 用户名
+                .col-md-4.pl-5.pr-5
+                    .card.cyan.darken-3
+                        .view
+                            img.card-img-top(style="height: 420px; object-fit: cover" src='https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(131).jpg', alt='photo')
+                            a(href='javascript:;')
+                                .mask.rgba-white-slight
+                        .card-body.text-center
+                            h4.card-title.white-text 图像名
+                            a.btn.btn-outline-white.btn-md.waves-effect.owner(href='#') 用户名
+                .col-md-4.pl-5.pr-5
+                    .card.blue.darken-3
+                        .view
+                            img.card-img-top(style="height: 420px; object-fit: cover" src='https://mdbootstrap.com/img/Photos/Horizontal/Nature/4-col/img%20(131).jpg', alt='photo')
+                            a(href='javascript:;')
+                                .mask.rgba-white-slight
+                        .card-body.text-center
+                            h4.card-title.white-text 图像名
+                            a.btn.btn-outline-white.btn-md.waves-effect.owner(href='#') 用户名
+            // 页码
+            nav.my-3(aria-label='Page navigation example')
+                ul#page-par1.pagination.pg-dark-grey.justify-content-center
+                    li#page1.page-item.active
+                        a.page-link 1
+            // 页码
+            // 人物
+        #USERS.tab-pane.fade.mr-5.ml-5(role='tabpanel', aria-labelledby='profile-tab')
+            .row.mr-5.ml-5
+                .col-md-4.card.testimonial-card.pl-0.pr-0.mr-5.ml-5
+                    .card-up.near-moon-gradient.color-block.z-depth-1-half
+                    .avatar.mx-auto.white
+                        img.rounded-circle.img-fluid.p-3(src='https://mdbootstrap.com/img/Photos/Avatars/img%20%2810%29.jpg', alt='woman avatar')
+                    .card-body
+                        h4.card-title
+                            a#3.owner(href='') 用户名
+                        hr
+                        p.intro
+                            i.fa.fa-quote-left
+                            |  个人介绍
+                .col-md-4.card.testimonial-card.pl-0.pr-0.mr-5.ml-5
+                    .card-up.deep-blue-gradient.color-block.z-depth-1-half
+                    .avatar.mx-auto.white
+                        img.rounded-circle.img-fluid.p-3(src='https://mdbootstrap.com/img/Photos/Avatars/img%20%2810%29.jpg', alt='woman avatar')
+                    .card-body
+                        h4.card-title
+                            a#4.owner(href='') 用户名
+                        hr
+                        p.intro
+                            i.fa.fa-quote-left
+                            |  个人介绍
+                .col-md-4.card.testimonial-card.pl-0.pr-0.mr-5.ml-5
+                    .card-up.tempting-azure-gradient.color-block.z-depth-1-half
+                    .avatar.mx-auto.white
+                        img.rounded-circle.img-fluid.p-3(src='https://mdbootstrap.com/img/Photos/Avatars/img%20%2810%29.jpg', alt='woman avatar')
+                    .card-body
+                        h4.card-title
+                            a#5.owner(href='') 用户名
+                        hr
+                        p.intro
+                            i.fa.fa-quote-left
+                            |  个人介绍
+            // 页码
+            nav.fixed-bottom(aria-label='Page navigation example')
+                ul#page-par2.pagination.pg-dark-grey.justify-content-center
+                    li#ppage1.page-item.active
+                        a.page-link 1
+            // 页码
+    // 卡片
+    // 主体部分
+
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/customize/search.js')

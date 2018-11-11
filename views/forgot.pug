@@ -1,17 +1,24 @@
 extends layout
 
 block content
-    .row.my-5
-        .col-md-6.mr-auto.ml-auto.animated.zoomIn
-            // Material form login
-            .card
-                h5.card-header.info-color.white-text.text-center.py-4
-                    strong 忘记密码
-                .card-body.px-lg-5.pt-1
-                    // Form
-                    form(style='color: #757575;', action='/users/forgot', method='post')
-                        .md-form(style='padding-top: 8px;')
-                            i.fa.fa-envelope.prefix(style='font-size: 24px')
-                            input#email.form-control(type='email', name='email')
-                            label(for='email') 电子邮箱
-                        button#sign-in-btn.btn.btn-outline-info.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 重置密码
+    .bg(style='background: url(/images/bg1.jpg); background-size: contain;background-repeat: round; height: 750px; position: absolute; width: 100%; filter: blur(px);')
+    .container
+        .row.my-5
+            .col-md-6.mr-auto.ml-auto.animated.zoomIn
+                // Material form login
+                .card(style='background-color: transparent;')
+                    h5.card-header.white-text.text-center.py-4(style='background-color: transparent; color: #555')
+                        strong(style='color: #555') 忘记密码
+                    .card-body.px-lg-5.pt-1
+                        // Form
+                        form(style='color: #555;', action='/users/forgot', method='post')
+                            .md-form(style='padding-top: 8px;')
+                                i.fa.fa-envelope.prefix(style='font-size: 24px')
+                                input#email.form-control(type='email', name='email')
+                                label(for='email') 电子邮箱
+                            button#sign-in-btn.btn.btn-outline-light.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 重置密码
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')

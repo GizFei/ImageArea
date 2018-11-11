@@ -1,5 +1,142 @@
 extends layout
 
 block content
-    h1 #{username} Area
-    p Welcome to PhotoArea
+    .img-fullscreen.text-center.pt-5.hide.animated.fadeIn
+        img(width='80%', height='80%', src='images/1.jpg')
+    // 首页介绍
+    .section-header.fadeInDown.animated(style='animation-name: fadeInDown;')
+        h2.h1-responsive.font-weight-bold.text-center.my-4 欢迎来到“图域”
+        p.text-center.w-responsive.mx-auto.mb-4 关于网站的介绍
+    // 首页介绍
+    .container.fadeInUp.animated(style='animation-name: fadeInUp')
+        // 使用轮播进行图像推荐，最多五张
+        // Carousel Wrapper
+        #carousel-example-1.carousel.slide.carousel-fade.p-3.text-center.hoverable(data-ride="carousel")
+                // Indicators
+                ol.carousel-indicators
+                    li.active(data-target='#carousel-example-1', data-slide-to='0')
+                    li(data-target='#carousel-example-1', data-slide-to='1')
+                    li(data-target='#carousel-example-1', data-slide-to='2')
+                    li(data-target='#carousel-example-1', data-slide-to='3')
+                    li(data-target='#carousel-example-1', data-slide-to='4')
+                // /.Indicators
+                // Slides
+                #item-par.carousel-inner(role='listbox', data-interval='true')
+                    // 1
+                    #item0.carousel-item.active
+                        // 图片
+                        .view
+                            img.d-block.w-100.image(src='./images/photo.jpg', alt='First slide')
+                        // 文字
+                        .carousel-caption
+                            h3#title1.h3-responsive 图像名
+                            // <p>First text</p>
+                            .img-info
+                                i.fa.fa-tag(aria-hidden='true')
+                                span 标签
+                // /.Slides
+                // /.Carousel Wrapper
+        #carousel-example-2.carousel.slide.text-center.p-3(data-interval='false')
+            // Indicators
+            ol.carousel-indicators(style='display:none;')
+                li.active(data-target='#carousel-example-2', data-slide-to='0')
+                li(data-target='#carousel-example-2', data-slide-to='1')
+                li(data-target='#carousel-example-2', data-slide-to='2')
+                li(data-target='#carousel-example-2', data-slide-to='3')
+                li(data-target='#carousel-example-2', data-slide-to='4')
+            // /.Indicators
+            #other-item-par.carousel-inner(role='listbox', data-interval='false')
+                // 1
+                #other-item0.carousel-item.active
+                    .row
+                        .col-md-4(style='background: #F1F2F3;')
+                            .fadeInUp.animated(style='animation-name: fadeInUp;')
+                                #like1.heart(rel='like')
+                                .img-info
+                                    | 喜爱(
+                                    span#likeCount
+                                    | )
+                                .img-info
+                                    i.fa.fa-link(aria-hidden='true') &nbsp;&nbsp;相册：
+                                    span 图片链接(到所有人相册)
+                                .img-info
+                                    i.fa.fa-external-link(aria-hidden='true') &nbsp;&nbsp;
+                                    span
+                                        a(href='javascript:;') 分享
+                                .img-info
+                                    i.fa.fa-download(aria-hidden='true') &nbsp;&nbsp;
+                                    span
+                                        a(href='javascript:;') 下载
+                                .img-info
+                                    .row
+                                        .col-md-4.text-right
+                                            img.comment-profile.ownerAvatar.rounded-circle.z-depth-1-half(src='/images/profile.jpg')
+                                        .col-md-6.align-middle.pt-2
+                                            a.name.page-link.ownerName John Doe
+                                        .col-md-2
+                                    // 用户头像
+                                    // 图像信息
+                                    // 轮播项
+                                    // 评论
+                        .col-md-8
+                            h4#comments_num.my-3 留言区
+                            // 1
+                            .row.comment#comment0(style='display: none;')
+                                .col-md-1.img-comment
+                                    img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                // 用户头像
+                                .col-md-2.img-comment
+                                    a.name.page-link John Doe
+                                // 用户名
+                                .col-md-7.img-comment
+                                    span.comment-text 评论内容
+                                // 评论内容
+                                .col-md-2.img-comment
+                                    span.date 发布日期
+                                // 发布日期
+                                // 提交评论表单
+                            .row.comment#comment1(style='display: none;')
+                                .col-md-1.img-comment
+                                    img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                // 用户头像
+                                .col-md-2.img-comment
+                                    a.name.page-link John Doe
+                                // 用户名
+                                .col-md-7.img-comment
+                                    span.comment-text 评论内容
+                                // 评论内容
+                                .col-md-2.img-comment
+                                    span.date 发布日期
+                                // 发布日期
+                                // 提交评论表单
+                            .row.comment#comment2(style='display: none;')
+                                .col-md-1.img-comment
+                                    img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                // 用户头像
+                                .col-md-2.img-comment
+                                    a.name.page-link John Doe
+                                // 用户名
+                                .col-md-7.img-comment
+                                    span.comment-text 评论内容
+                                // 评论内容
+                                .col-md-2.img-comment
+                                    span.date 发布日期
+                                // 发布日期
+                                // 提交评论表单
+                                // /.Slides
+        #footer.md-form.img-comment.mt-4.mx-4
+            form
+                i.fa.fa-comment.prefix
+                textarea#textarea-char-counter.form-control.md-textarea(maxlength='120', rows='0')
+                label(for='textarea-char-counter') 写点评论......
+                small#commentHelpBlockMD.form-text.text-muted Your comment should be less than 120 characters long, contain any characters.
+                .form-group.row.btn-left
+                    span.btn.btn-primary.mr-3.comment-submit 提交
+            iframe(name='targetFrame', style='display:none;')
+
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/customize/index.js')

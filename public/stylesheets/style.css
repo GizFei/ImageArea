@@ -25,10 +25,10 @@ ul.error li{
 ul.info li{
     padding: 15px;
     margin-bottom: 20px;
-    border: 1px solid #33b5e5;
+    border: 1px solid #cdeefd;
     border-radius: 4px;
-    color: #FFF;
-    background-color: #33b5e5;
+    color: #02587f;
+    background-color: #cdeefd;
 }
 
 .btn-rounded{
@@ -36,10 +36,296 @@ ul.info li{
 }
 
 #sign-up-btn:hover, #sign-in-btn:hover{
-    background: #33b5e5 !important;
+    background: #CCC !important;
     color: white !important;
 }
 
 .custom-file-label::after {
     content: "浏览" !important;
+}
+
+/* upload.html */
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;
+}
+
+.card{
+    transition: all 0.3s;
+}
+
+.mask:hover{
+    background-color: rgba(96,96,96,0.4);
+    cursor: pointer;
+}
+
+.new-file{
+    position: absolute;
+    font-size: 50px;
+    top: 40%;
+    left: 40%;
+    right: 40%;
+    text-align: center;
+    color: whitesmoke;
+}
+
+.deleteArea{
+    background: rgba(44, 44, 44, 0.5);
+    position: absolute;
+    bottom: 0;
+    height: 56px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+}
+
+.deleteArea:hover .fa-trash-o{
+    color: orangered;
+    transition: all 0.4s;
+}
+
+.fa-trash-o{
+    font-size: 24px;
+    color: white;
+    margin-top: 12px;
+    width: 100%;
+}
+
+.slideInUp, .slideOutDown{
+    animation-duration: 0.4s;
+}
+
+input[type=checkbox]{
+    display: none !important;
+    opacity: 0;
+}
+
+.bootstrap-select > button{
+    box-shadow: none !important;
+}
+
+.tag.btn-light:hover{
+    background-color: #eee !important;
+}
+
+/*
+ * 上面只进行了注释，没有进行修改和添加
+ * 下面是另加的
+ * EDIT BY TK
+ */
+
+/*调整导航栏左边距*/
+.navbar-nav {
+    padding-left: 20px;
+}
+
+/*调整导航选项边距*/
+.nav-li {
+    padding-right: 10px;
+}
+
+/*用户信息主体边距*/
+.info {
+    padding: .5rem 1rem;
+}
+
+/*裁剪图像比例轮播*/
+.crop_img {
+    width: 640px;
+    height: 480px;
+    margin: auto;
+}
+.preview_crop_img {
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+
+/*轮播控制剧中*/
+.home-carousel-li {
+    margin: auto;
+}
+
+/*推荐图像信息显示*/
+.img-info {
+    margin: auto;
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
+
+/*每一条评论*/
+.comment {
+    margin-bottom: 20px;
+}
+
+/*推荐图像评论显示*/
+.img-comment {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/*用户信息页面滑动布局*/
+.scrollspy {
+    padding: 20px;
+    overflow: scroll;
+    height: 480px;
+}
+
+.btn-left {
+    float: right;
+}
+
+.section-header {
+    margin-top: 3rem;
+}
+
+.badge{
+    font-size: 14px;
+    padding: 8px;
+    font-style: normal;
+}
+
+#edit-profile{
+    font-size: 28px; cursor: pointer; position: absolute; right: 0; color: darkgray;
+}
+#edit-profile:hover{
+    color: gray;
+    transition: all 0.3s;
+}
+
+/*Home页面*/
+.chip.chip-lg {
+    height: 56px;
+    padding-right: 20px;
+    border-radius: 32px;
+}
+.chip.chip-lg img {
+    height: 56px;
+    width: 56px;
+    border-radius: 28px;
+}
+.chip.chip-lg:hover{
+    color: white;
+    cursor: pointer;
+    background-color: cornflowerblue!important;
+    transition: all 0.3s;
+}
+
+.img-container{
+    transition: all 0.3s;
+}
+
+.img-container:hover{
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+    transition: all 0.3s;
+}
+
+.carousel-btn{
+    padding: 8px;
+    border-radius: 8px;
+}
+.carousel-btn:hover{
+    background-color: #4285f4;
+    color: white !important;
+}
+
+/* 评论区 */
+.comment-profile {
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    cursor: pointer;
+}
+.comment-date {
+    font-size: 12px;
+    color: #666;
+    border-right: 1px solid #666;
+    padding-right: 8px;
+}
+
+.search{
+    margin: 5rem 10rem 0 10rem;
+}
+.tabs{
+    margin: 3rem 25rem;
+}
+.h-3{
+    height: 3rem;
+}
+
+/* 模糊背景 */
+.blur-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding:0;
+    margin: 0;
+    z-index: -1;
+}
+#blurBg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.img-fullscreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding:0;
+    margin: 0;
+    z-index: 10;
+    background: rgba(0,0,0,0.4);
+    transition: all 0.4s;
+}
+
+/*点赞动画*/
+.heart {
+    background: url('../images/heart.png') no-repeat left;
+    height: 50px;
+    width: 50px;
+    cursor: pointer;
+    position: absolute;
+    left: 10px;
+    background-size: 2900%;
+}
+.heart:hover, .heart:focus{
+    background-position: right;
+}
+/*!*Internet Explorer 10、Firefox 以及 Opera 支持 @keyframes 规则和 animation 属性*/
+/*Chrome 和 Safari 需要前缀 -webkit-*/
+@-webkit-keyframes heartBlast {
+    0% {
+        background-position: left;
+    }
+    100% {
+        background-position: right;
+    }
+}
+@keyframes heartBlast {
+    0% {
+        background-position: left;
+    }
+    100% {
+        background-position: right;
+    }
+}
+.heartAnimation {
+    display: inline-block;
+    -webkit-animation-name: heartBlast;
+    animation-name: heartBlast;
+    -webkit-animation-duration: .8s;
+    animation-duration: .8s;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-timing-function: steps(28);
+    animation-timing-function: steps(28);
+    background-position: right;
 }

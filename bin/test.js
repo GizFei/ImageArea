@@ -1,5 +1,7 @@
 const Oss = require('ali-oss');
 const fs = require('fs');
+const uuidv1 = require('uuid/v1');
+const random = require('random-js')();
 
 // 配置OSS
 const OSS = new Oss(
@@ -29,10 +31,14 @@ async function list(dir) {
             prefix: dir,
             delimiter: '/'
         });
-        result.objects.forEach(function (obj) {
-            console.log(obj.name);
-        });
-        console.log(result);
+        // let result = await OSS.list({
+        //     'max-keys': 7,
+        // });
+        console.log(result.objects);
+        // result.prefixes.forEach(function (obj) {
+        //     console.log(obj);
+        // });
+        //console.log(result);
     }catch (err) {
         console.log(err);
     }
@@ -56,15 +62,26 @@ async function uploadFile() {
 
 // 下载云端users.json文件，返回Buffer，将其转化为json对象
 async function downloadUsersJson(){
-    let result = await UserDB.get(USER_DB_FILENAME);
-    let users = JSON.parse(result.content.toString());
-    console.log(users);
-    return users;
+    try {
+        let result = await OSS.get('newDir/test.json');
+        let users = JSON.parse(result.content.toString());
+        users.age += 2;
+        let result2 = await OSS.put('newDir/test.json', new Buffer(JSON.stringify(users)));
+        console.log(result2);
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 async function downloadFile(){
-    let result = await OSS.get("image.jpg");
-    console.log(result);
+    let result = await OSS.get("user.json");
+    console.log(result.content.toString());
+    // let info = {
+    //     name: result.res.headers['x-oss-meta-name'],
+    //     date: result.res.headers['x-oss-meta-date'],
+    //     url: result.res.requestUrls
+    // };
+    console.log(result.content.length);
 }
 
 // 删除一个文件
@@ -77,7 +94,7 @@ async function deleteFile(){
     }
 }
 
-list("newDir/");
+list("");
 // uploadFile();
 // downloadFile();
 // downloadUsersJson();

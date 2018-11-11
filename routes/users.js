@@ -130,8 +130,8 @@ router.post('/register', upload.single('profile'), function (req, res, next) {
                 });
                 req.flash('success', "注册成功！");
 
-                res.location('/');
-                res.redirect('/');
+                // res.location('/users/login');
+                res.redirect('/users/login');
             }
             console.log(newUser);
         });

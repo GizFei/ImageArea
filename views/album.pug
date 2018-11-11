@@ -1,0 +1,75 @@
+extends layout
+
+block content
+    .container
+        // Navbar
+        nav.navbar.navbar-light.light-blue.lighten-4.my-4
+            // Navbar brand
+            a.navbar-brand(href='javascript:;', style='cursor:default') 我的相册
+            // Collapse button
+            .row.mx-1
+                button.navbar-toggler(data-toggle='modal' data-target="#newAlbumModal")
+                    span.dark-blue-text
+                        i.fa.fa-plus.fa-1x
+                button.navbar-toggler.toggler-example(type='button', data-toggle='collapse', data-target='#album-category')
+                    span.dark-blue-text
+                        i.fa.fa-bars.fa-1x
+            // Collapsible content
+            #album-category.collapse.navbar-collapse
+                // Links
+                ul.navbar-nav.pl-3.pr-4
+                    li.nav-item(class=(policy === "public" ? 'active' : ''))
+                        a.nav-link#album-public(href='/personal/album/public') 公开相册
+                    li.nav-item(class=(policy === "private" ? 'active' : ''))
+                        a.nav-link#album-private(href='/personal/album/private') 私人相册
+                // Links
+                // Collapsible content
+                // /.Navbar
+        .row
+            // Card Wider
+            if albums
+                each album, i in albums
+                    .col-md-4.my-0
+                        .card-cascade.wider(style='background-color: transparent;')
+                            // Card image
+                            .view.view-cascade.overlay.z-depth-2(style=' border-radius: 8px;')
+                                img.card-img-top(src=album.coverUrl, alt='Card image cap', style='object-fit: contain; height: 240px')
+                                a(href=album.albumurl)
+                                    .mask.rgba-white-slight
+                            // Card content
+                            .card.card-body.text-left.mx-2(style='z-index: -1;')
+                                // Title
+                                h4.card-title
+                                    i.fa.fa-photo.mr-3.align-middle(style='color: mediumpurple')
+                                    strong #{album.albumname}
+                                    i.fa.fa-angle-double-right(style='position: absolute;right:8%; font-size: 28px; cursor:pointer')
+            // Card Wider
+        #newAlbumModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
+            .modal-dialog(role='document')
+                .modal-content
+                    .modal-header
+                        h5#exampleModalLabel.modal-title 添加新的相册
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                    .modal-body
+                        input#albumInput.form-control(type='text', name='album', placeholder='输入相册名...')
+                        .row.text-right.py-2
+                            .col-md-12
+                                // 公开
+                                .custom-control.custom-control-inline.custom-radio
+                                    input#albumPublic.custom-control-input(type='radio', name='radio')
+                                    label.custom-control-label(for='albumPublic') 公开
+                                // 私密
+                                .custom-control.custom-control-inline.custom-radio
+                                    input#albumPrivate.custom-control-input(type='radio', name='radio', checked='')
+                                    label.custom-control-label(for='albumPrivate') 私密
+                    .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') 取消
+                        button#albumNewBtn.btn.btn-primary(type='button') 添加
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/bootstrap-select.min.js')
+    script(src='/javascripts/customize/album.js')

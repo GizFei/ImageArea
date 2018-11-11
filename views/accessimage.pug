@@ -1,0 +1,53 @@
+extends layout
+
+block content
+    .blur-container
+        canvas#blurBg(width='100', height='200')
+    .container
+        .row.mt-4.py-2
+            .col-md-6.py-2
+                h3.pl-3.mb-0.py-2(style='border-left: 4px solid #b3e5fc; font-size: 24px;') #{albumname}
+            .text-right.ml-auto.mr-3.py-2.pr-3.pl-4.z-depth-1(style='background-color: #b3e5fc; border-radius: 36px 8px 8px 36px')
+                span.mr-3 #{username}
+                a(href='/access/'+username)
+                    img.comment-profile.hoverable(src=avatar)
+        #img-template.row
+            if infos
+                each info, i in infos
+                    .col-md-4.my-4
+                        .card
+                            .view.overlay
+                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: contain; height: 252px')
+                                a(href='javascript:;')
+                                    .mask.rgba-white-slight
+                            .card-body.px-0.pb-0
+                                h4.card-title.mb-4.mx-3
+                                    | #{info.name}
+                                    button.navbar-toggler.float-right(data-toggle='collapse', data-target='#img-info0', aria-expanded='false')
+                                        span.dark-blue-text
+                                            i.fa.fa-commenting-o.fa-1x(style='font-size: 20px; color: #AAA')  (#{info.messages.length})
+                                    span.float-right
+                                        i.fa.fa-heart-o(style='font-size: 20px; color: #AAA')  (#{info.likes})
+                                // 标签
+                                .container.mb-3
+                                    .row
+                                        .col-sm-12
+                                            each tag, i in info.tags
+                                                label.btn.btn-dark.z-depth-0.btn-sm.disabled.ml-0.px-4 #{tag}
+                                // 留言/评论
+                                #img-info0.collapse(style='background-color: #F1F2F3')
+                                    .container
+                                        ul.list-unstyled.my-0.pt-3
+                                            each msg, i in info.messages
+                                                li.media.pb-3
+                                                    a(href='/access/'+msg.username, title=msg.username)
+                                                        img.d-flex.mr-3.comment-profile(src=msg.avatar, alt='头像')
+                                                    .media-body
+                                                        span.comment-date #{msg.date}
+                                                        |&nbsp;&nbsp; #{msg.msg}
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/bootstrap-select.min.js')

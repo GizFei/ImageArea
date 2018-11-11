@@ -1,31 +1,46 @@
 extends layout
 
 block content
-    .row.my-5
-        .col-md-6.mr-auto.ml-auto.animated.zoomIn
-            // Material form login
-            .card
-                h5.card-header.info-color.white-text.text-center.py-4
-                    strong 登录
-                // Card content
-                .card-body.px-lg-5.pt-1
-                    // Form
-                    form(style='color: #757575;', method='post', action='/users/login')
-                        // Username
-                        .md-form
-                            i.fa.fa-user.prefix
-                            input#username.form-control(type='text', name='username')
-                            label(for='username') 用户名
-                        // Password
-                        .md-form
-                            i.fa.fa-lock.prefix
-                            input#password.form-control(type='password', name='password')
-                            label(for='password') 密码
-                        // Sign in button
-                        button#sign-in-btn.btn.btn-outline-info.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit', name='submit') 登录
-                        .d-flex.justify-content-around.mb-4
-                            a(href='/users/forgot') 忘记密码？
-                            a(href='/users/register') 注册
-                    // Form
-                    // Material form login
+    .bg(style='background: url(/images/bg1.jpg); background-size: contain;background-repeat: round; height: 750px; position: absolute; width: 100%; filter: blur(px);')
+    .container.py-5
+        .row(style='z-index:20; position:relative')
+            .col-md-12
+                != messages()
+        .row.py-5
+            .col-md-6.text-center
+                .row(style='margin-top: 25%')
+                    .col-sm-12
+                        h3 Image Area
+                        p.lead “图域”，努力为您管理图片
+            .col-md-6
+                // Material form login
+                .card(style='background-color: transparent;')
+                    h5.card-header.text-center.py-4(style='background-color: transparent; color: #555')
+                        strong 登录
+                    // Card content
+                    .card-body.px-lg-5.pt-1
+                        // Form
+                        form(style='color: #555;', method='post', action='/users/login')
+                            // Username
+                            .md-form
+                                i.fa.fa-user.prefix
+                                input#username.form-control(type='text', name='username')
+                                label(for='username') 用户名
+                            // Password
+                            .md-form
+                                i.fa.fa-lock.prefix
+                                input#password.form-control(type='password', name='password')
+                                label(for='password') 密码
+                            // Sign in button
+                            button#sign-in-btn.btn.btn-outline-light.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 登录
+                            .d-flex.justify-content-around.mb-4
+                                a(href='/users/forgot') 忘记密码？
+                                a(href='/users/register') 注册
+                        // Form
+                        // Material form login
 
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')

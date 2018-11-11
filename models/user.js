@@ -47,7 +47,14 @@ module.exports.comparePassword = function(candidatePassword, hash, callback){
 
 module.exports.getUserByEmail = function(email, callback){
     User.findOne({'email': email}, callback);
-}
+};
+
+module.exports.queryUsersByLike = function(query, callback){
+    let like = {
+        username: new RegExp(query)
+    };
+    User.find(query, callback);
+};
 
 module.exports.createUser = function (newUser, callback) {
     User.ifUserNameExists(newUser.username, function (err, ifExists) {

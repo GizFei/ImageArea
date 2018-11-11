@@ -1,0 +1,32 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-md-12
+                h3.pl-3.mb-0.mt-4.py-2(style='border-left: 4px solid #b3e5fc; font-size: 24px;') #{albumname}
+        #img-template.row
+            if infos
+                each info, i in infos
+                    .col-md-4.my-4
+                        .card
+                            .view.overlay
+                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: contain; height: 252px')
+                                a(href='javascript:;')
+                                    .mask.rgba-white-slight
+                            .card-body.px-0.pb-0
+                                h5.card-title.mb-4.mx-3
+                                    | #{info.name}
+                                    span.float-right
+                                        i.fa.fa-calendar-plus-o(style='font-size: 12px; color: #AAA')  #{info.date}
+                                // 标签
+                                .container.mb-3
+                                    .row
+                                        .col-sm-12
+                                            each tag, i in info.tags
+                                                label.btn.btn-dark.z-depth-0.btn-sm.disabled.ml-0.px-4 #{tag}
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
