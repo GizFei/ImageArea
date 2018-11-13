@@ -14,6 +14,7 @@ window.onload = function() {
     document.getElementById("fillPH1").setAttribute('value', value);
     document.getElementById("fillPH1").setAttribute('placeholder', "Search users/images...");
 
+    $("#progressModal").modal("show");
     // 异步获取搜索结果，上面也为有效代码
     $.ajax({
         type:'post',
@@ -28,6 +29,7 @@ window.onload = function() {
         //    }
         //
         success: function (data) {
+            $("#progressModal").modal("hide");
             let imageNum = data.image_total_num;
             let userNum = data.user_total_num;
             let page1 = Math.ceil(imageNum/3);                          // 图像页数
@@ -45,7 +47,7 @@ window.onload = function() {
                 $(copy).children()[0].textContent = i;
                 par1.appendChild(copy);
             }
-            for(let i=2;i<page2+2;i++) {                                // 总页数生成
+            for(let i=2;i<page2+1;i++) {                                // 总页数生成
                 let copy = eg2.cloneNode(true);
                 copy.id = "page"+i;
                 $(copy).removeClass("active");
@@ -69,7 +71,7 @@ window.onload = function() {
             for(let i = 0; i < 3;i++) {
                 if(i < data.users.length){
                     $(userPane).find(".col-md-4").eq(i).removeClass("hide");
-                    $(userPane).find(".img-fluid")[i].src = data.users[i].avatar;
+                    $(userPane).find("img")[i].src = data.users[i].avatar;
                     $(userPane).find(".owner")[i].textContent = data.users[i].username;
                     $(userPane).find(".owner")[i].href = '/access/' + data.users[i].username;
                     $(userPane).find(".intro")[i].textContent = data.users[i].introduction;
@@ -79,10 +81,19 @@ window.onload = function() {
             }
         },
         error: function () {
+            $("#progressModal").modal("hide");
             alert("搜索失败");
         }
     });
+
+    setTimeout(function () {
+        $("#progressModal").modal("hide");
+    }, 2000);
 };
+
+$(document).ready(function () {
+    $("#progressModal").modal("hide");
+});
 
 // var images = [];
 // var users = [];
@@ -164,5 +175,5 @@ var pageItemEvent = function () {
             alert("翻页失败");
         }
     })
-}
+};
 

@@ -1,13 +1,7 @@
 // 初始化加载首页
 window.onload = function(){
     $(".comment-submit").on("click", submitComment);
-    // $(".image").on("click", function () {
-    //     $(".img-fullscreen").children("img")[0].src = this.src;
-    //     $(".img-fullscreen").removeClass("hide");
-    // });
-    // $(".img-fullscreen").on("click", function () {
-    //     $(this).addClass("hide");
-    // });
+
     $(".carousel").carousel({
         interval: 5000
     });
@@ -69,7 +63,7 @@ window.onload = function(){
                 copy.id = "item" + i.toString();
                 copy.name = data[i].uuid;                                               //图像ID
                 copy.getElementsByTagName("img")[0].src = data[i].url;                  //图像外链接
-                copy.getElementsByTagName("h3")[0].textContent = data[i].filename;      //图像名
+                copy.getElementsByTagName("h3")[0].textContent = data[i].name;      //图像名
                 copy.getElementsByTagName("span")[0].textContent = data[i].tags;        //图像标签
                 // 下半区
                 let otherCopy = document.createElement("div");
@@ -136,6 +130,16 @@ window.onload = function(){
     })
 };
 
+window.onscroll = function(){
+    if(window.scrollY >= $(".signal-head")[0].offsetHeight - 64){
+        $("nav").addClass("animated fadeIn primary-color");
+        $("form").eq(0).removeClass("hide");
+    }else{
+        $("nav").removeClass("animated fadeIn primary-color");
+        $("form").eq(0).addClass("hide");
+    }
+};
+
 // 异步添加评论
 function submitComment() {
     let parent = document.getElementsByClassName("carousel-item active")[1];
@@ -150,28 +154,28 @@ function submitComment() {
         url:'/messages',
         // 同时提交评论信息
         data: {id: photoId, msg: comment, date: dateString, owner: owner},
-        success: function (res, data) {
+        success: function (res) {
             if(res.status === 'success') {
                 for (let j = 0; j < 3; j++) {
-                    if (data.messages.length >= j) {
-                        comParent.style.display = "";
-                        comParent.getElementsByTagName("img")[j+1].src = data.messages[j].url;
-                        comParent.getElementsByTagName("a")[j+1].textContent = data.messages[j].username;   //评论人
-                        comParent.getElementsByTagName("a")[j+1].href = '/access/' + data.messages[j].username;
-                        comParent.getElementsByTagName("span")[2 * j + 4].textContent = data.messages[j].msg;    //评论信息
-                        comParent.getElementsByTagName("span")[2 * j + 5].textContent = data.messages[j].date;    //评论日期
+                    if (res.messages.length > j) {
+                        $(comParent).children(".row").eq(j).removeClass("hide");
+                        comParent.getElementsByTagName("img")[j].src = res.messages[j].avatar;
+                        comParent.getElementsByTagName("a")[j].textContent = res.messages[j].username;   //评论人
+                        comParent.getElementsByTagName("a")[j].href = '/access/' + res.messages[j].username;
+                        comParent.getElementsByClassName("comment-text")[j].textContent = res.messages[j].msg;    //评论信息
+                        comParent.getElementsByClassName("date")[j].textContent = res.messages[j].date;    //评论日期
                     }
                     else
-                        otherCopy.style.display = "none";
+                        $(comParent).children(".row").eq(j).addClass("hide");
                 }
             }
             else {
                 alert(res.msg);
             }
         },
-        error: function (data) {
-            console.log(data.toString());
-            // alert("提交评论失败！");
+        error: function () {
+            // console.log(data.toString());
+            alert("提交评论失败！");
         },
         dataType:"json"
     });

@@ -6,7 +6,15 @@ const imageOSS = require('../models/imageAreaOSS');
 
 router.get('/', function (req, res) {
     console.log(req.query);
-    res.render('search');
+    if(req.isAuthenticated()){
+        profileOSS.getProfileImage(req.user.id, function (err, url) {
+            if(err) throw err;
+            req.profile = url;
+            res.render('search', { profile: url });
+        });
+    }else{
+        res.render('search');
+    }
 });
 
 // todo 判断用户是否登录

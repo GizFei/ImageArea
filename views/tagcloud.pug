@@ -1,0 +1,63 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        title 标签云
+        link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', type='text/css')
+        style.
+            html, body {
+                padding: 0;
+                margin: 0;
+                height: 100%;
+            }
+            #container {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                background-size: cover;
+                background-image: url('/images/tagCloudBg.jpg');
+            }
+            label {
+                position: absolute;
+                background-color: whitesmoke;
+                padding: 12px 24px;
+                border-radius: 6px;
+                box-shadow: 0px 0px 10px 4px rgba(100, 100, 100, 0.5);
+                transition: all 0.3s;
+            }
+            label:hover {
+                transition: all 0.3s;
+                opacity: 1;
+                cursor: pointer;
+                color: cornflowerblue;
+            }
+            #tags-container{
+                width: 100%;
+                height: 100%;
+                margin: auto;
+                min-width: 800px;
+                min-height: 600px;
+                padding: auto;
+            }
+            .icon-back {
+                position: absolute;
+                width: 42px;
+                height: 42px;
+                background-color: cornflowerblue;
+                border-radius: 21px;
+                text-align: center;
+            }
+            .icon-back:hover {
+                background-color: steelblue;
+                cursor: pointer;
+            }
+    body
+        #container
+            .icon-back
+                span.fa.fa-angle-left.fa-2x(style='position: relative; color: white; margin-top: 3px; margin-right: 2px')
+            #tags-container.tag-cloud
+                if tags
+                    each tag, i in tags
+                        label.test(title=tag.frequency) #{tag.name}
+        script(src='/javascripts/jquery-3.3.1.min.js')
+        script(src='/javascripts/customize/tagcloud.js')

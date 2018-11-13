@@ -56,6 +56,8 @@ var inputFileEvent = function () {
         files[idx] = this.files[0];
         albums[idx] = "默认相册";
         tags[idx] = [];
+        // 初始化图片名
+        $("input.imgName").eq(idx).val(names[idx]);
 
         if (numOfImages < 5) {
             // 最多添加5个
@@ -122,8 +124,12 @@ function getAlbumOptions() {
 //
 var imgNameEvent = function () {
     var idx = getIndex(this);
-    names[idx] = this.value;
-}
+    if(this.value === ""){
+        this.value = names[idx];
+    }else{
+        names[idx] = this.value;
+    }
+};
 
 var getIndex = function (ele) {
     var singleImg = $(ele).parents(".singleImg")[0];
@@ -242,6 +248,7 @@ var postData = function () {
     }
     formData.append("num", String(names.length));
     console.log("post data", formData);
+    $("#progressModal").modal("show"); // 显示进度条
     $.ajax({
         url: "/upload/images",
         type: 'POST',
@@ -252,6 +259,7 @@ var postData = function () {
         contentType: false, // 告诉jQuery不要去设置Content-Type请求头
         success: function (data) {
             console.log(data);
+            $("#progressModal").modal("hide"); // 隐藏进度条
             if(data.status === 'success'){
                 alert("上传成功");
                 window.location.href = '/upload/images';
@@ -261,6 +269,7 @@ var postData = function () {
         },
         error: function (data) {
             console.log(data);
+            $("#progressModal").modal("hide"); // 隐藏进度条
             alert("上传失败");
             window.location.href = '/upload/images';
         }

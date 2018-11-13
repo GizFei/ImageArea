@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    .bg(style='background: url(/images/bg1.jpg); background-size: contain;background-repeat: round; height: 750px; position: absolute; width: 100%; filter: blur(px);')
+    .bg(style='background: url(/images/bg1.png); background-size: cover; background-repeat: round; height: 850px; position: absolute; width: 100%; filter: blur(px);')
     .container.py-5
         .row(style='z-index:20; position:relative')
             .col-md-12
@@ -22,17 +22,21 @@ block content
                         // Form
                         form(style='color: #555;', method='post', action='/users/login')
                             // Username
-                            .md-form
-                                i.fa.fa-user.prefix
-                                input#username.form-control(type='text', name='username')
-                                label(for='username') 用户名
+                            .md-textfield-wrapper.my-4
+                                .md-textfield.group
+                                    input#username(type='text', required='', name='username')
+                                    i.fa.fa-lock.prefix
+                                    span.bar
+                                    label(for='username') 用户名
                             // Password
-                            .md-form
-                                i.fa.fa-lock.prefix
-                                input#password.form-control(type='password', name='password')
-                                label(for='password') 密码
+                            .md-textfield-wrapper.my-5.pb-3
+                                .md-textfield.group
+                                    input#password(type='password', required='', name='password')
+                                    i.fa.fa-lock.prefix
+                                    span.bar
+                                    label(for='password') 密码
                             // Sign in button
-                            button#sign-in-btn.btn.btn-outline-light.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 登录
+                            button#sign-in-btn.btn.btn-outline-dark.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 登录
                             .d-flex.justify-content-around.mb-4
                                 a(href='/users/forgot') 忘记密码？
                                 a(href='/users/register') 注册

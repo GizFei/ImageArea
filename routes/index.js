@@ -22,10 +22,10 @@ router.get('/', function (req, res) {
         profileOSS.getProfileImage(req.user.id, function (err, url) {
             if(err) throw err;
             req.profile = url;
-            res.render('index', { active: "Home", profile: url });
+            res.render('home', { active: "Home", profile: url });
         });
     }else{ // 游客模式
-        res.render('index', { active: 'Home'});
+        res.render('home', { active: 'Home'});
     }
 });
 
@@ -45,11 +45,14 @@ router.post('/messages', function (req, res) {
             msg: req.body.msg,
             date: req.body.date,
             owner: req.body.owner
-    };
-        console.log(message);
-        imageOSS.uploadMessage(req.user.username, message, function (err) {
-            if (err) throw err;
-            res.json({status: 'success'});
+        };
+        console.log("提交评论", message);
+        imageOSS.uploadMessage(req.user.username, message, function (err, msg) {
+            if (err) {
+                res.json({ status: 'error', msg: err });
+                throw err;
+            }
+            res.json({status: 'success', messages: msg });
         });
     }else{
         res.json({
@@ -60,7 +63,29 @@ router.post('/messages', function (req, res) {
 });
 
 router.post('/like', function (req, res) {
-    console.log(req.body.id);
+    console.log("like", req.body.id);
+    // 点赞
+    // if(req.isAuthenticated()){ // 已登录
+    //     let message = {
+    //         id: req.body.id,
+    //         msg: req.body.msg,
+    //         date: req.body.date,
+    //         owner: req.body.owner
+    //     };
+    //     console.log("提交评论", message);
+    //     imageOSS.uploadMessage(req.user.username, message, function (err, msg) {
+    //         if (err) {
+    //             res.json({ status: 'error', msg: err });
+    //             throw err;
+    //         }
+    //         res.json({status: 'success', messages: msg });
+    //     });
+    // }else{
+    //     res.json({
+    //         status: "error",
+    //         msg: "未登录"
+    //     });
+    // }
     res.json({status: "success"});
 });
 

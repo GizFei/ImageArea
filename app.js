@@ -23,6 +23,7 @@ const uploadRouter = require('./routes/upload');
 const personalRouter = require('./routes/personal');
 const accessRouter = require('./routes/access');
 const searchRouter = require('./routes/search');
+const experimentRouter = require('./routes/experiment');
 
 const app = express();
 
@@ -83,6 +84,7 @@ app.use('/upload', uploadRouter);
 app.use('/personal', personalRouter);
 app.use('/access', accessRouter);
 app.use('/search', searchRouter);
+app.use('/experiment', experimentRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

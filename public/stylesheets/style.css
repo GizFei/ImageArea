@@ -38,6 +38,7 @@ ul.info li{
 #sign-up-btn:hover, #sign-in-btn:hover{
     background: #CCC !important;
     color: white !important;
+    border-color: #CCC !important;
 }
 
 .custom-file-label::after {
@@ -286,14 +287,219 @@ input[type=checkbox]{
     transition: all 0.4s;
 }
 
+/* 用户搜索结果 */
+.testimonial-card .card-up {
+    overflow: hidden;
+    height: 120px;
+    /* -webkit-border-top-left-radius: .25rem; */
+    border-top-left-radius: .25rem;
+    -webkit-border-top-right-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+.testimonial-card .avatar {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    margin-top: -60px;
+    overflow: hidden;
+    border: 5px solid #fff
+}
+.testimonial-card .avatar img {
+    width: 100%;
+    height: 100%;
+}
+.testimonial-card .card-body {
+    text-align: center
+}
+
+/* 进度条模态框 */
+.md-progress {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    position: relative;
+    display: block;
+    width: 100%;
+    height: .25rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background-color: #eee
+}
+.md-progress .indeterminate {
+    background-color: #90caf9
+}
+.md-progress .indeterminate:before {
+    content: "";
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left,right;
+    -webkit-animation: indeterminate 2.1s cubic-bezier(.65,.815,.735,.395) infinite;
+    animation: indeterminate 2.1s cubic-bezier(.65,.815,.735,.395) infinite
+}
+.md-progress .indeterminate:after {
+    content: "";
+    position: absolute;
+    background-color: inherit;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    will-change: left,right;
+    -webkit-animation: indeterminate 2.1s cubic-bezier(.165,.84,.44,1) infinite;
+    animation: indeterminate 2.1s cubic-bezier(.165,.84,.44,1) infinite;
+    -webkit-animation-delay: 1.15s;
+    animation-delay: 1.15s
+}
+@-webkit-keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%
+    }
+
+    60% {
+        left: 100%;
+        right: -90%
+    }
+
+    100% {
+        left: 100%;
+        right: -90%
+    }
+}
+@keyframes indeterminate {
+    0% {
+        left: -35%;
+        right: 100%
+    }
+
+    60% {
+        left: 100%;
+        right: -90%
+    }
+
+    100% {
+        left: 100%;
+        right: -90%
+    }
+}
+
+/* material design textfields */
+/* form starting stylings ------------------------------- */
+.md-textfield-wrapper{
+    width:100%; position: relative;
+}
+.md-textfield.group {
+    position: relative;
+}
+.md-textfield input {
+    font-size: 18px;
+    padding: 8px 8px 8px 0px;
+    display: block;
+    margin-left: 10%;
+    width: 90%;
+    border: none;
+    background: transparent;
+    border-bottom: 1px solid #757575;
+}
+.md-textfield input:focus {
+    outline: none;
+}
+/* PREFIX ======================================= */
+.md-textfield .prefix{
+    width: 10%;
+    position: absolute;
+    bottom: 0;
+    font-size: 32px;
+    transition: all 0.2s;
+}
+/* active state */
+.md-textfield input:focus ~ .prefix,
+.md-textfield input:valid ~ .prefix {
+    color: #4285f4;
+    transition: all 0.2s;
+}
+/* LABEL ======================================= */
+.md-textfield label {
+    color: #999;
+    font-size: 18px;
+    font-weight: normal;
+    position: absolute;
+    margin-left: 10%;
+    pointer-events: none;
+    left: 0;
+    top: 10px;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+/* active state */
+.md-textfield input:focus ~ label, .md-textfield input:valid ~ label {
+    top: -20px;
+    font-size: 14px;
+    color: #4285f4;
+}
+/* BOTTOM BARS ================================= */
+.md-textfield .bar {
+    margin-left: 10%;
+    position: relative;
+    padding-left: 5px;
+    display: block;
+    width: 90%;
+}
+.md-textfield .bar:before, .md-textfield .bar:after {
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 0;
+    position: absolute;
+    background: #4285f4;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all;
+}
+.md-textfield .bar:before {
+    left: 50%;
+}
+.md-textfield .bar:after {
+    right: 50%;
+}
+/* active state */
+.md-textfield input:focus ~ .bar:before,
+.md-textfield input:focus ~ .bar:after {
+    width: 50%;
+}
+
+/* 上传图片边框 */
+.border-upload{
+    border: 2px solid #CCC;
+    border-radius: .5em;
+}
+
+.modal-open .modal{
+    overflow-y: hidden;
+}
+
+/* 首页 */
+.mCarousel-li {
+    width: 8.625rem !important;
+    height: 4.625rem !important;
+    margin-right: 10px !important;
+    margin-left: 10px !important;
+    bottom: 15px !important;
+}
+.mCarousel-thumb {
+    border: 2px #76c1f9 solid;
+}
 /*点赞动画*/
 .heart {
-    background: url('../images/heart.png') no-repeat left;
+    background: url('/images/heart.png') no-repeat left;
     height: 50px;
     width: 50px;
     cursor: pointer;
     position: absolute;
-    left: 10px;
+    right: 35px;
     background-size: 2900%;
 }
 .heart:hover, .heart:focus{
@@ -328,4 +534,44 @@ input[type=checkbox]{
     -webkit-animation-timing-function: steps(28);
     animation-timing-function: steps(28);
     background-position: right;
+}
+
+/* 首页页头 */
+section.full{
+    position: relative;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+section.full .background{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FFF url(/images/header.jpg) center 65% no-repeat;
+    background-size: cover;
+}
+header.wrap {
+    height: -webkit-calc(80vh);
+    height: -moz-calc(80vh);
+    height: calc(80vh);
+    min-height: 320px;
+    position: relative;
+    z-index: 10
+}
+.header_section {
+    height: 100%;
+    margin: 0 0 60px;
+    display: table;
+    width: 100%;
+    text-align: center
+}
+.header_section_content {
+    margin: 0 auto;
+    padding: 0 40px;
+    display: table-cell;
+    vertical-align: middle
 }

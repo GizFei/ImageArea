@@ -1,5 +1,6 @@
 const Oss = require('ali-oss');
 const random = require('random-js')();
+const cp = require('child_process');
 
 // 配置OSS，指定为储存用户头像的Bucket
 const ImageClient = new Oss(
@@ -33,9 +34,13 @@ module.exports.getRandomImages = async function(callback){
             let info = JSON.parse(result.content.toString());
             let keys = Object.keys(info); // 获得键
             let x2 = random.integer(0, keys.length - 1);
-            let infoDetail = info[keys[x2]];
-            infoDetail.messages = await getMessagesOfImage(infoDetail.owner, infoDetail.uuid);;
-            images.push(infoDetail);
+            if(keys[x2]){
+                let infoDetail = info[keys[x2]];
+                infoDetail.messages = await getMessagesOfImage(infoDetail.owner, infoDetail.uuid);;
+                images.push(infoDetail);
+            }else{
+                images.push({});
+            }
         }
         callback(null, images);
     } catch (e) {
@@ -189,6 +194,117 @@ module.exports.addImageToTags = async function(imagesInfo, callback){
     }
 };
 
+/**
+ * 获取所有标签
+ * @param callback 回调函数：callback(err, tagsResult)
+ * @return {Promise<void>}
+ */
+module.exports.getAllTags = async function(callback){
+    try {
+        let tagsResult = [];
+        let result = await TechClient.list({
+            prefix: "",
+            delimiter: '/'
+        });
+        let objects = [];
+        result.objects.forEach(function (obj) {
+            objects.push(obj.name);
+        });
+        console.log("get All Tags", objects);
+        for (let i = 0; i < objects.length; i++) {
+            let r = await TechClient.get(objects[i]);
+            // 标签文件里的json信息
+            let tagInfo = JSON.parse(r.content.toString());
+            let tags = Object.keys(tagInfo);
+            tags.forEach(function (tag) {
+                tagsResult.push(tag);
+            });
+        }
+        callback(null, tagsResult);
+    } catch (e) {
+        callback(e, []);
+    }
+};
+
+module.exports.detectTagsOfImage = async function(callback){
+    let arg1 = 'E:\\WebStormProject\\ImageArea\\detection';
+    let arg2 = 'C:\\Users\\DELL\\Desktop\\images.json';
+
+    cp.exec('python C:\\Users\\DELL\\Desktop\\object_detection\\object_detection_image2json.py '+arg1+' '+arg2+' ', (err, stdout, stderr) => {
+        if (err){
+            console.log('stderr', err);
+            callback(err, []);
+        }
+        if (stdout){
+            console.log('stdout', stdout);
+            let results = stdout.substr(0, stdout.length-1).split("-");
+            let JSONResult = [];
+            results.forEach(function (r) {
+                JSONResult.push(JSON.parse(r));
+            });
+            console.log(Object.keys(JSONResult[0]));
+            callback(null, Object.keys(JSONResult[0]));
+        }else{
+            callback("NULl", []);
+        }
+    });
+};
+
+/**
+ * 获取所有标签和它的图片数
+ * @param callback 回调函数：callback(err, tagsResult)
+ * t = {
+ *     name: 标签名
+ *     frequency: 图片数
+ * }
+ * @return {Promise<void>}
+ */
+module.exports.getAllTagsWithFreq = async function(callback){
+    try {
+        let tagsResult = {};
+        let result = await TechClient.list({
+            prefix: "",
+            delimiter: '/'
+        });
+        let objects = [];
+        result.objects.forEach(function (obj) {
+            objects.push(obj.name);
+        });
+        console.log("get All Tags", objects);
+        for (let i = 0; i < objects.length; i++) {
+            let r = await TechClient.get(objects[i]);
+            // 标签文件里的json信息
+            let tagInfo = JSON.parse(r.content.toString());
+            let tags = Object.keys(tagInfo);
+            tags.forEach(function (tag) {
+                // 已经有该标签
+                if(tagsResult.hasOwnProperty(tag)){
+                    tagsResult[tag].frequency += tagInfo[tag].length;
+                }else{
+                    tagsResult[tag] = tagInfo[tag].length;
+                }
+            });
+        }
+        // 转换为数组
+        let finalResult = [];
+        let tagKeys = Object.keys(tagsResult);
+        if(tagKeys){
+            tagKeys.forEach(function (tagKey) {
+                let t = {
+                    name: tagKey,
+                    frequency: tagsResult[tagKey]
+                };
+                finalResult.push(t);
+            });
+            callback(null, finalResult);
+        }else{
+            callback(null, []);
+        }
+    } catch (e) {
+        callback(e, []);
+    }
+};
+
 async function searchTagByQuery(query){
     let searchResult = [];
     try {
@@ -267,6 +383,7 @@ async function getMessagesOfImage(username, imgId) {
         let messages = await getMessages(username);
         let messageDetail = messages[imgId];
         console.log("Get Comments Of Image", messageDetail);
+        messageDetail.reverse();
         return messageDetail.slice(0, 3); // 返回三条评论;
     } catch (e) {
         console.log(e);

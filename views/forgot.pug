@@ -1,9 +1,14 @@
 extends layout
 
 block content
-    .bg(style='background: url(/images/bg1.jpg); background-size: contain;background-repeat: round; height: 750px; position: absolute; width: 100%; filter: blur(px);')
+    .bg(style='background: url(/images/bg1.png); background-size: contain;background-repeat: round; height: 850px; position: absolute; width: 100%; filter: blur(px);')
     .container
         .row.my-5
+            .col-md-6.text-center
+                .row(style='margin-top: 25%')
+                    .col-sm-12
+                        h3 Image Area
+                        p.lead “图域”，努力为您管理图片
             .col-md-6.mr-auto.ml-auto.animated.zoomIn
                 // Material form login
                 .card(style='background-color: transparent;')
@@ -16,7 +21,7 @@ block content
                                 i.fa.fa-envelope.prefix(style='font-size: 24px')
                                 input#email.form-control(type='email', name='email')
                                 label(for='email') 电子邮箱
-                            button#sign-in-btn.btn.btn-outline-light.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 重置密码
+                            button#sign-in-btn.btn.btn-outline-dark.btn-rounded.btn-block.my-5.waves-effect.z-depth-0(type='submit') 重置密码
 
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')

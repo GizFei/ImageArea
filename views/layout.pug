@@ -3,14 +3,14 @@ html(lang='en')
     head
         meta(charset='UTF-8')
         title 图域
-        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css")
+        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css", type="text/css")
         link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
         link(rel='stylesheet', href='/stylesheets/mdb.min.css')
         link(rel='stylesheet', href='/stylesheets/animate.css')
         link(rel="stylesheet", href="/stylesheets/bootstrap-select.min.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
-    body
-        nav.navbar.navbar-expand-lg.navbar-dark.primary-color.py-2.px-4.sticky-top
+    body(style='background-color: #F3F4F5')
+        nav.navbar.navbar-expand-lg.navbar-dark.py-2.px-4(class=(active == 'Home' ? "fixed-top" : "primary-color sticky-top"))
             a.navbar-brand(href='/') ImageArea
             button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNav', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
                 span.navbar-toggler-icon
@@ -20,9 +20,15 @@ html(lang='en')
                         a.nav-link(href='/') 首页
                     li.nav-item.mx-2.animated(class=(active == 'personal' ? 'active bounce' : ''))
                         a.nav-link(href='/personal/album/public') 个人
-                    li.nav-item.animated(class=(active == 'Pricing' ? 'active bounce' : ''))
-                        a.nav-link(href='#') 群组
-                form.form-inline.my-lg-0(method='get', action='/search')
+                    li.nav-item.dropdown.nav-li
+                        a#navbarDropdownMenuLink.nav-link.dropdown-toggle(data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') 试验功能
+                        .dropdown-menu.dropdown-primary(aria-labelledby='navbarDropdownMenuLink')
+                            a.dropdown-item(href='javascript:;') 群组
+                            a.dropdown-item(href='/experiment/tagcloud') 标签云
+                            a.dropdown-item(href='/experiment/objectdetection') 内容检索
+                            a.dropdown-item(href='javascript:;') 图片处理(PS)版本管理
+                            // 可选，用于VIP充值
+                form.form-inline.my-lg-0(method='get', action='/search', class=(active == 'Home' ? 'hide':''))
                     input#fillPH.form-control.mr-sm-2(type='text', name='search', placeholder='搜索用户/图片...', aria-label='Search')
                     button.btn.btn-outline-white.btn-md.my-2.my-sm-0.ml-3#search-btn 搜索
                 if !user

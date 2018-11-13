@@ -14,10 +14,11 @@ block content
             .col-md-12.imageInfo.hide.animated.fadeInDown
                 .row(style='z-index: 2; position: relative;')
                     .col-sm-6.mt-2
-                        .md-form.my-1
-                            i.fa.fa-photo.prefix
-                            input#name0.form-control(type='text')
-                            label(for='name0') 照片名
+                        .md-textfield.group
+                            input#name0(type='text', required='', class='imgName')
+                            i.fa.fa-photo.prefix(style='font-size: 24px')
+                            span.bar
+                            label 图片名
                     .col-sm-6.text-right.pr-4
                         select#albummodel.selectpicker(title='选择相册')
                             if albums
@@ -73,6 +74,16 @@ block content
                         img.card-img-top.preview(src='/images/photo.jpg', alt='Card image cap', style='height: 240px; object-fit: cover;')
                     .deleteArea.hide.animated
                         i.fa.fa-trash-o.deleteIcon
+        // 进度条模态框
+        #progressModal.modal.fade(tabindex='-1', role='dialog', data-backdrop='static', data-keyboard='false')
+            .modal-dialog.modal-dialog-centered(role='document')
+                .modal-content
+                    .modal-header
+                        h5.modal-title 上传中
+                    .modal-body
+                        .progress.md-progress.primary-color-dark
+                            .indeterminate
+
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
     script(src='/javascripts/bootstrap.min.js')

@@ -1,0 +1,157 @@
+extends layout
+
+block content
+    // 首页介绍
+    section.full.signal-head.animated.fadeIn
+        .background
+        header.wrap
+            .header_section
+                .header_section_content
+                    h2.h1-responsive.white-text.my-4 时光太匆匆，美好太短暂
+                    h4.h4-responsive.white-text.my-2 “图域”，努力帮您留下这些瞬间
+    section.full.text-center.animated.fadeIn(style='margin: 64px 0 48px')
+        h2(style='h2-responsive') 为您推荐
+    // 首页介绍
+    #mCarousel.carousel.slide.carousel-fade.carousel-thumbnails(data-interval='false')
+        // Slides
+        #slides.carousel-inner(role='listbox')
+            .carousel-item.active
+                .view
+                    img.d-block.w-100(src='/images/1.jpg')
+                .carousel-caption.text-right(style='top: 20px; right: 5%;')
+                    h3.h3-responsive 图像名
+                    .img-info
+                        i.fa.fa-tag(aria-hidden='true')
+                        span 标签
+                    .heart(rel='like')
+                    .img-info
+                        | 喜爱(
+                        span
+                        | )
+                    .img-info
+                        i.fa.fa-link(aria-hidden='true')   相册：
+                        span 图片链接(到所有人相册)
+                    .img-info
+                        i.fa.fa-external-link(aria-hidden='true')   
+                        span
+                            a(href='javascript:;') 分享
+                    .img-info
+                        i.fa.fa-download(aria-hidden='true')   
+                        span
+                            a(href='javascript:;') 下载
+                    .img-info
+                        .row
+                            .col-md-8
+                            .col-md-4.text-right
+                                | C
+                                img.comment-profile.ownerAvatar.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                |  pyright by&nbsp;
+                                a.ownerName(href='javascript:;') John Doe
+        // /.Slides
+        // /.Controls
+        ol#controls.carousel-indicators(style='left: initial; margin-right: 1%;')
+            li#control0.mCarousel-li.active(data-target='#mCarousel', data-slide-to='0', style='background-color: transparent')
+                .view
+                    img.d-block.w-100.img-fluid(src='')
+                    .mask.rgba-black-strong
+            li#control1.mCarousel-li(data-target='#mCarousel', data-slide-to='1', style='background-color: transparent')
+                .view
+                    img.d-block.w-100.img-fluid(src='')
+                    .mask.rgba-black-strong
+            li#control2.mCarousel-li(data-target='#mCarousel', data-slide-to='2', style='background-color: transparent')
+                .view
+                    img.d-block.w-100.img-fluid(src='')
+                    .mask.rgba-black-strong
+            li#control3.mCarousel-li(data-target='#mCarousel', data-slide-to='3', style='background-color: transparent')
+                .view
+                    img.d-block.w-100.img-fluid(src='')
+                    .mask.rgba-black-strong
+            li#control4.mCarousel-li(data-target='#mCarousel', data-slide-to='4', style='background-color: transparent')
+                .view
+                    img.d-block.w-100.img-fluid(src='')
+                    .mask.rgba-black-strong
+    #mCarousel2.carousel.slide.carousel-fade.carousel-thumbnails.pl-5.pr-5(data-interval='false')
+        #slides2.carousel-inner(role='listbox')
+            .carousel-item.active
+                .row
+                    .col-md-8
+                        h4.my-3 留言区
+                        // 1
+                        .row.comment(style='display: none')
+                            .col-md-1.img-comment
+                                img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                            // 用户头像
+                            .col-md-2.img-comment
+                                a.name.page-link John Doe
+                            // 用户名
+                            .col-md-7.img-comment
+                                span.comment-text 评论内容
+                            // 评论内容
+                            .col-md-2.img-comment
+                                span.date 发布日期
+                            // 发布日期
+                            // 交评论表单
+                            // 2
+                        .row.comment(style='display: none')
+                            .col-md-1.img-comment
+                                img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                            // 用户头像
+                            .col-md-2.img-comment
+                                a.name.page-link John Doe
+                            // 用户名
+                            .col-md-7.img-comment
+                                span.comment-text 评论内容
+                            // 评论内容
+                            .col-md-2.img-comment
+                                span.date 发布日期
+                            // 发布日期
+                            // 提交评论表单
+                        .row.comment(style='display: none')
+                            .col-md-1.img-comment
+                                img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                            // 用户头像
+                            .col-md-2.img-comment
+                                a.name.page-link John Doe
+                            // 用户名
+                            .col-md-7.img-comment
+                                span.comment-text 评论内容
+                            // 评论内容
+                            .col-md-2.img-comment
+                                span.date 发布日期
+                            // 发布日期
+                            // 提交评论表单
+                    .col-md-4.md-form.img-comment.mt-4
+                        form
+                            i.fa.fa-comment.prefix
+                            textarea.textarea-char-counter.form-control.md-textarea(maxlength='60', rows='4')
+                            label(style='left: 1.25rem') 写点评论...
+                            small#commentHelpBlockMD.form-text.text-muted 留言不多于60个字符
+                            .form-group.row.btn-left
+                                span.btn.btn-primary.mr-3.comment-submit 提交
+    footer.page-footer.font-small.special-color-dark.pt-4
+        .container
+            ul.list-unstyled.list-inline.text-center
+                li.list-inline-item
+                    a.btn-floating.btn-fb.mx-1
+                        i.fa.fa-facebook
+                li.list-inline-item
+                    a.btn-floating.btn-tw.mx-1
+                        i.fa.fa-twitter
+                li.list-inline-item
+                    a.btn-floating.btn-gplus.mx-1
+                        i.fa.fa-google-plus
+                li.list-inline-item
+                    a.btn-floating.btn-li.mx-1
+                        i.fa.fa-linkedin
+                li.list-inline-item
+                    a.btn-floating.btn-dribbble.mx-1
+                        i.fa.fa-dribbble
+        .footer-copyright.text-center.py-3
+            | © 2018 Copyright:
+            a(href='')  DAM GROUP-2
+
+    script(src='/javascripts/jquery-3.3.1.min.js')
+    script(src='/javascripts/popper.min.js')
+    script(src='/javascripts/bootstrap.min.js')
+    script(src='/javascripts/mdb.min.js')
+    script(src='/javascripts/customize/home.js')

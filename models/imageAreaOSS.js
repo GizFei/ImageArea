@@ -301,7 +301,12 @@ module.exports.getPublicAlbums = async function(username, callback) {
     }
 };
 
-// TODO 提交评论
+/**
+ * 提交评论，成功后返回最新的三条评论用于刷新
+ * @param username 用户名
+ * @param message 留言
+ * @param callback 回调函数：callback(err, messages)
+ */
 module.exports.uploadMessage = async function(username, message, callback) {
     try {
         let userInfo = await getUserInfo(username);
@@ -314,25 +319,21 @@ module.exports.uploadMessage = async function(username, message, callback) {
         let messages = await getMessages(message.owner);
         console.log("upload Message", messages);
         let messageDetail = messages[message.id];
-        messageDetail.push(m);
-        messages[message.id] = messageDetail;
-        let result = await ImageClient.put(message.owner + "/public/messages.json", new Buffer(JSON.stringify(messages)));
-        callback(null);
+        if(messageDetail){
+            messageDetail.push(m);
+            messages[message.id] = messageDetail;
+            let result = await ImageClient.put(message.owner + "/public/messages.json", new Buffer(JSON.stringify(messages)));
+            messageDetail.reverse();
+            callback(null, messageDetail.slice(0, 3));
+        }else{
+            callback("没有找到id", []);
+        }
+
     } catch (e) {
-        callback(e);
+        callback(e, []);
     }
 };
 
-async function getMessages(username){
-    try {
-        let result = await ImageClient.get(username + '/public/messages.json');
-        return JSON.parse(result.content.toString());
-    } catch (e) {
-        console.log(e);
-    }
-}
-
-// TODO 获取评论
 module.exports.getMessagesOfImage = async function(username, imgId, callback) {
     try {
         let messages = await getMessages(username);
@@ -344,6 +345,20 @@ module.exports.getMessagesOfImage = async function(username, imgId, callback) {
         callback(e, []);
     }
 };
+
+
+module.exports.addLikeToImage = async function(username, imgInfo, callback){
+
+};
+
+async function getMessages(username){
+    try {
+        let result = await ImageClient.get(username + '/public/messages.json');
+        return JSON.parse(result.content.toString());
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 async function getMessagesOfImage(username, imgId) {
     try {

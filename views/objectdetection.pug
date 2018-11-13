@@ -8,33 +8,36 @@ block content
                     .card.animated.fadeInDown(style='overflow: hidden;')
                         // Card image
                         .view.overlay
-                            img.card-img-top.preview(src='/images/photo.jpg', alt='Card image cap', style='height: 240px; object-fit: cover')
+                            img.card-img-top.preview(src='/images/photo.jpg', alt='Card image cap', style='height: 240px; object-fit: cover;')
                             .mask.rgba-white-slight
                                 label(for='file0', style='width: 100%; height: 100%; cursor: pointer;')
                                     i.fa.fa-plus.new-file
-                            input#file0(type='file', style='opacity: 0; display: none; ', accept='image/jpeg, image/x-png')
+                            input#file0(type='file', style='opacity: 0; display: none; ;', accept='image/jpeg, image/x-png')
                         .deleteArea.hide.animated
                             i.fa.fa-trash-o.deleteIcon
                 .col-md-8.imageInfo.hide.animated.fadeInLeft
                     .row(style='z-index: 2; position: relative;')
                         .col-sm-6.mt-2
-                            .md-textfield.group
-                                input#name0(type='text', required='', class='imgName')
-                                i.fa.fa-photo.prefix(style='font-size: 24px')
-                                span.bar
-                                label 图片名
+                            .md-textfield-wrapper
+                                .md-textfield.group
+                                    input(type='text', required='')
+                                    i.fa.fa-photo.prefix(style='font-size: 24px;')
+                                    span.bar
+                                    label 图片名
                         .col-sm-6.text-right.pr-4
                             select#albummodel.selectpicker(title='选择相册')
-                                if albums
-                                    each album, i in albums
-                                        option #{album}
-                    #tagmodel.row.p-3.my-3.pr-0.tag-container(style='z-index: 1; position: relative')
+                                option Mustard
+                                option Ketchup
+                                option Relish
+                    #tagmodel.row.p-3.pr-0.tag-container(style='z-index: 1; position: relative;')
                         p.pt-2.m-0 选择标签：
                         label.btn.btn-primary.btn-sm(data-toggle='modal', data-target='#newTagModal')
                             i.fa.fa-plus
-                        if tags
-                            each tag, i in tags
-                                label.btn.btn-light.z-depth-0.btn-sm.tag #{tag}
+                        label.btn.btn-light.z-depth-0.btn-sm.tag 人物
+                        label.btn.btn-light.z-depth-0.btn-sm.tag 风景
+                        label.btn.btn-light.z-depth-0.btn-sm.tag 建筑
+                        label.btn.btn-light.z-depth-0.btn-sm.tag 动物
+                        label.btn.btn-light.z-depth-0.btn-sm.tag 植物
                     .row.text-center.mx-1
                         .col-md-6.border.pt-3
                             .row.text-left
@@ -57,34 +60,32 @@ block content
                         i.fa.fa-angle-double-left
                         |  点击左侧区域添加图片
         .row.my-2
-            button#batchUploadBtn.btn.btn-default.btn-rounded.mr-3.ml-auto.mt-4(style='width: 125px;') 批量上传
-            button#submit.btn.btn-default.btn-rounded.mr-3.mt-4(style='width: 120px;') 上传
-        // Modal
+            button#detectionBtn.btn.btn-info.ml-0.mr-auto.mt-4(style='width: 125px;')
+                a.white-text(href='') 内容识别
+            button#submit.btn.btn-default.btn-rounded.mr-0.ml-auto.mt-4(style='width: 120px;') 上传
         #newTagModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='exampleModalLabel', aria-hidden='true')
             .modal-dialog(role='document')
                 .modal-content
                     .modal-header
-                        h5#exampleModalLabel.modal-title 添加新的标签
+                        h5#exampleModalLabel.modal-title Modal title
                         button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
                     .modal-body
-                        input#tag.form-control(type='text', name='tag', placeholder='输入标签名...')
+                        input#tag.form-control(type='text', name='tag', placeholder='添加新的标签...')
                     .modal-footer
                         button.btn.btn-secondary(type='button', data-dismiss='modal') 取消
                         button#tag-new-btn.btn.btn-primary(type='button') 添加
-        // 进度条模态框
         #progressModal.modal.fade(tabindex='-1', role='dialog', data-backdrop='static', data-keyboard='false')
             .modal-dialog.modal-dialog-centered(role='document')
                 .modal-content
                     .modal-header
-                        h5.modal-title 上传中
+                        h5.modal-title 努力识别中
                     .modal-body
                         .progress.md-progress.primary-color-dark
                             .indeterminate
-
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
     script(src='/javascripts/bootstrap.min.js')
     script(src='/javascripts/mdb.min.js')
-    script(src="/javascripts/bootstrap-select.min.js")
-    script(src="/javascripts/customize/upload.js")
+    script(src='/javascripts/bootstrap-select.min.js')
+    script(src='/javascripts/customize/objectdetection.js')

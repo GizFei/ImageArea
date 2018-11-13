@@ -1,12 +1,16 @@
 extends layout
 
 block content
-    .img-fullscreen.text-center.pt-5.hide.animated.fadeIn
-        img(width='80%', height='80%', src='images/1.jpg')
     // 首页介绍
-    .section-header.fadeInDown.animated(style='animation-name: fadeInDown;')
-        h2.h1-responsive.font-weight-bold.text-center.my-4 欢迎来到“图域”
-        p.text-center.w-responsive.mx-auto.mb-4 关于网站的介绍
+    section.full.signal-head
+        .background
+        header.wrap
+            .header_section
+                .header_section_content
+                    h2.h1-responsive.white-text.my-4 时光太匆匆，美好太短暂
+                    h4.h4-responsive.white-text.my-2 “图域”，努力帮您留下这些瞬间
+    section.full.text-center(style='margin: 64px 0 48px')
+        h2(style='h2-responsive') 为您推荐
     // 首页介绍
     .container.fadeInUp.animated(style='animation-name: fadeInUp')
         // 使用轮播进行图像推荐，最多五张
@@ -83,7 +87,7 @@ block content
                             // 1
                             .row.comment#comment0(style='display: none;')
                                 .col-md-1.img-comment
-                                    img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                    img.comment-profile.rounded-circle.z-depth-1-half(src='/images/profile.jpg')
                                 // 用户头像
                                 .col-md-2.img-comment
                                     a.name.page-link John Doe

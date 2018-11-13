@@ -1,10 +1,14 @@
 window.onload = function(){
+    $(".blur-container")[0].style.height = document.body.clientHeight + "px";
     canvasBg.src = $(".mask:first").parents(".overlay").children("img")[0].src;
 
-    $(".mask").on("click", function(){
+    $(".mask").on("mouseover", function(){
         console.log("click");
         console.log($(this).parents(".overlay").children("img")[0].src);
         canvasBg.src = $(this).parents(".overlay").children("img")[0].src;
+    }).on("click", function () {
+        $("#fsImg")[0].src = $(this).parents(".view").children()[0].src;
+        $("#fullscreenModal").modal("show");
     });
 
     $(".navbar-toggler").each(function (idx, ele) {
@@ -26,6 +30,5 @@ var drawBlur = function(){
     var w = canvas.width;
     var h = canvas.height;
     canvasContext.drawImage(canvasBg, 0, 0, w, h);
-    console.log(canvasContext);
-    stackBlurCanvasRGBA("blurBg", 0, 0, w, h, 100);
+    stackBlurCanvasRGBA("blurBg", 0, 0, w, h, 24);
 };

@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    .bg(style='background: url(/images/bg1.jpg); background-size: cover; background-repeat: round; height: 900px; position: absolute; width: 100%; filter: blur(px);')
+    .bg(style='background: url(/images/bg1.png); background-size: cover; background-repeat: round; height: 900px; position: absolute; width: 100%; filter: blur(px);')
     .container
         .row(style='z-index:20; position:relative')
             .col-md-12
@@ -11,6 +11,11 @@ block content
             each error, i in errors
                 li.alert.alert-danger(style="list-style:none") #{error.msg}
         .row.my-5
+            .col-md-6.text-center
+                .row(style='margin-top: 25%')
+                    .col-sm-12
+                        h3 Image Area
+                        p.lead “图域”，努力为您管理图片
             .col-md-6.mr-auto.ml-auto.animated.zoomIn
                 .card(style='background-color: transparent;')
                     h5.card-header.white-text.text-center.py-4(style='background-color: transparent; color: #555')
@@ -43,7 +48,7 @@ block content
                                     input#profile.custom-file-input(style='cursor: pointer', type='file', name='profile', accept='image/gif,image/tiff, image/x-png, image/jpeg')
                                     label#profile-label.custom-file-label(style='cursor: pointer', for='profile') 上传头像
                             // Sign up button
-                            button#sign-up-btn.my-5.btn.btn-rounded.btn-outline-light.btn-block.waves-effect.z-depth-0(type='submit') 注册
+                            button#sign-up-btn.my-5.btn.btn-rounded.btn-outline-dark.btn-block.waves-effect.z-depth-0(type='submit') 注册
 
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')

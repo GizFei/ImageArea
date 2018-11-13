@@ -39,6 +39,10 @@ block content
                                                     .media-body
                                                         span.comment-date #{msg.date}
                                                         |&nbsp;&nbsp; #{msg.msg}
+        #fullscreenModal.modal.animated.zoomIn.fade(tabindex='-1', role='dialog')
+            .modal-dialog.animated.zoomIn.faster.modal-fluid.modal-dialog-centered(role='document', style='overflow: hidden')
+                .modal-content.mx-auto(style='background-color: transparent; width: 72%')
+                    img#fsImg.img-fluid.mx-auto(src='/images/1.jpg')
 
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
@@ -50,5 +54,10 @@ block content
             $(".navbar-toggler").each(function (idx, ele) {
                 $(this).attr("data-target", "#img-info" + String(idx));
                 $(".collapse").eq(idx).attr("id", "img-info" + String(idx));
+            });
+
+            $(".mask").on("click", function () {
+                $("#fsImg")[0].src = $(this).parents(".view").children()[0].src;
+                $("#fullscreenModal").modal("show");
             })
         }

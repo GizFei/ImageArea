@@ -6,7 +6,7 @@ block content
     .container
         .row.mt-4.py-2
             .col-md-6.py-2
-                h3.pl-3.mb-0.py-2(style='border-left: 4px solid #b3e5fc; font-size: 24px;') #{albumname}
+                h3.pl-3.mb-0.py-2(style='border-left: 4px solid #b3e5fc; font-size: 24px; color: white') #{albumname}
             .text-right.ml-auto.mr-3.py-2.pr-3.pl-4.z-depth-1(style='background-color: #b3e5fc; border-radius: 36px 8px 8px 36px')
                 span.mr-3 #{username}
                 a(href='/access/'+username)
@@ -45,9 +45,27 @@ block content
                                                     .media-body
                                                         span.comment-date #{msg.date}
                                                         |&nbsp;&nbsp; #{msg.msg}
+        #fullscreenModal.modal.animated.zoomIn.fade(tabindex='-1', role='dialog')
+            .modal-dialog.animated.zoomIn.faster.modal-fluid.modal-dialog-centered(role='document', style='overflow: hidden')
+                .modal-content.mx-auto(style='background-color: transparent; width: 72%')
+                    img#fsImg.img-fluid.mx-auto(src='/images/1.jpg')
 
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
     script(src='/javascripts/bootstrap.min.js')
     script(src='/javascripts/mdb.min.js')
     script(src='/javascripts/bootstrap-select.min.js')
+    script(src='/javascripts/StackBlur.js')
+    //script.
+    //    window.onload = function () {
+    //        $(".navbar-toggler").each(function (idx, ele) {
+    //            $(this).attr("data-target", "#img-info" + String(idx));
+    //            $(".collapse").eq(idx).attr("id", "img-info" + String(idx));
+    //        });
+    //
+    //        $(".mask").on("click", function () {
+    //            $("#fsImg")[0].src = $(this).parents(".view").children()[0].src;
+    //            $("#fullscreenModal").modal("show");
+    //        });
+    //    }
+    script(src='/javascripts/customize/image.js')
