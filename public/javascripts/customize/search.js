@@ -1,5 +1,16 @@
 // 加载搜索结果的首页
 window.onload = function() {
+    // 添加SnackBar
+    let snackBar = document.createElement("div");
+    document.body.appendChild(snackBar);
+    snackBar.textContent = "消息提示条";
+    snackBar.id = "snackbar";
+
+    $(".modal").on("shown.bs.modal", function () {
+        console.log("shown");
+        $(".navbar").css("margin-right", "");
+    })
+
     let value;
     let query = window.location.href;
     let pairs = query.split("&");
@@ -14,7 +25,9 @@ window.onload = function() {
     document.getElementById("fillPH1").setAttribute('value', value);
     document.getElementById("fillPH1").setAttribute('placeholder', "Search users/images...");
 
-    $("#progressModal").modal("show");
+    $("#progressModal").modal("show").on("hidden.bs.modal", function () {
+        console.log('hidden');
+    });
     // 异步获取搜索结果，上面也为有效代码
     $.ajax({
         type:'post',
@@ -30,6 +43,9 @@ window.onload = function() {
         //
         success: function (data) {
             $("#progressModal").modal("hide");
+            setTimeout(function () {
+                $("#progressModal").modal("hide");
+            }, 1000);
             let imageNum = data.image_total_num;
             let userNum = data.user_total_num;
             let page1 = Math.ceil(imageNum/3);                          // 图像页数
@@ -79,16 +95,20 @@ window.onload = function() {
                     $(userPane).find(".col-md-4").eq(i).addClass("hide");
                 }
             }
+            showMessage("搜索完成");
         },
         error: function () {
             $("#progressModal").modal("hide");
-            alert("搜索失败");
+            setTimeout(function () {
+                $("#progressModal").modal("hide");
+            }, 1000);
+            showMessage("搜索失败");
         }
     });
 
-    setTimeout(function () {
-        $("#progressModal").modal("hide");
-    }, 2000);
+    // setTimeout(function () {
+    //     $("#progressModal").modal("hide");
+    // }, 2000);
 };
 
 $(document).ready(function () {
@@ -172,8 +192,15 @@ var pageItemEvent = function () {
             }
         },
         error: function () {
-            alert("翻页失败");
+            showMessage("翻页失败");
         }
     })
+};
+
+var showMessage = function (msg) {
+    $("#snackbar").text(msg).addClass("show");
+    setTimeout(function () {
+        $("#snackbar").text("消息提示条").removeClass("show");
+    }, 3000);
 };
 

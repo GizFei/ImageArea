@@ -1,4 +1,12 @@
 $(document).ready(function () {
+    let snackBar = document.createElement("div");
+    document.body.appendChild(snackBar);
+    snackBar.textContent = "消息提示条";
+    snackBar.id = "snackbar";
+
+    $(".modal").on("shown.bs.modal", function () {
+        $(".navbar").css("margin-right", "");
+    });
     $("#albumNewBtn").on("click", function () {
         let albumName = $("input#albumInput").val();
         let policy = "public";
@@ -7,7 +15,7 @@ $(document).ready(function () {
             policy = "private";
         }
         if(albumName === ""){
-            alert("相册名不能为空！");
+            showMessage("相册名不能为空");
         }else{
             $.ajax({
                 type: 'post',
@@ -20,16 +28,27 @@ $(document).ready(function () {
                 cache: false,
                 success: function (res) {
                     if(res.status === "success"){
-                        alert("添加成功");
-                        window.location.href = '/personal/album/public';
+                        $("#newAlbumModal").modal("hide");
+                        $("#snackbar").text("添加成功").addClass("show");
+                        setTimeout(function () {
+                            $("#snackbar").text("消息提示条").removeClass("show");
+                            window.location.href = '/personal/album/' + policy;
+                        }, 2000);
                     }else{
-                        alert("添加失败");
+                        showMessage("添加失败");
                     }
                 },
-                error: function (res) {
-                    alert("添加失败，后台错误");
+                error: function () {
+                    showMessage("添加失败，后台错误");
                 }
             });
         }
     });
 });
+
+var showMessage = function (msg) {
+    $("#snackbar").text(msg).addClass("show");
+    setTimeout(function () {
+        $("#snackbar").text("消息提示条").removeClass("show");
+    }, 3000);
+};

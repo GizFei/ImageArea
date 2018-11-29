@@ -44,7 +44,7 @@ block content
                             .col-md-8
                             .col-md-4.text-right
                                 | C
-                                img.comment-profile.ownerAvatar.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                img.comment-profile.ownerAvatar.rounded-circle.z-depth-1-half(src='/images/profile.jpg')
                                 |  pyright by&nbsp;
                                 a.ownerName(href='javascript:;') John Doe
         // /.Slides
@@ -52,23 +52,23 @@ block content
         ol#controls.carousel-indicators(style='left: initial; margin-right: 1%;')
             li#control0.mCarousel-li.active(data-target='#mCarousel', data-slide-to='0', style='background-color: transparent')
                 .view
-                    img.d-block.w-100.img-fluid(src='')
+                    img.d-block.w-100.img-fluid(src='/images/photo.jpg')
                     .mask.rgba-black-strong
             li#control1.mCarousel-li(data-target='#mCarousel', data-slide-to='1', style='background-color: transparent')
                 .view
-                    img.d-block.w-100.img-fluid(src='')
+                    img.d-block.w-100.img-fluid(src='/images/photo.jpg')
                     .mask.rgba-black-strong
             li#control2.mCarousel-li(data-target='#mCarousel', data-slide-to='2', style='background-color: transparent')
                 .view
-                    img.d-block.w-100.img-fluid(src='')
+                    img.d-block.w-100.img-fluid(src='/images/photo.jpg')
                     .mask.rgba-black-strong
             li#control3.mCarousel-li(data-target='#mCarousel', data-slide-to='3', style='background-color: transparent')
                 .view
-                    img.d-block.w-100.img-fluid(src='')
+                    img.d-block.w-100.img-fluid(src='/images/photo.jpg')
                     .mask.rgba-black-strong
             li#control4.mCarousel-li(data-target='#mCarousel', data-slide-to='4', style='background-color: transparent')
                 .view
-                    img.d-block.w-100.img-fluid(src='')
+                    img.d-block.w-100.img-fluid(src='/images/photo.jpg')
                     .mask.rgba-black-strong
     #mCarousel2.carousel.slide.carousel-fade.carousel-thumbnails.pl-5.pr-5(data-interval='false')
         #slides2.carousel-inner(role='listbox')
@@ -79,7 +79,7 @@ block content
                         // 1
                         .row.comment(style='display: none')
                             .col-md-1.img-comment
-                                img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                img.comment-profile.rounded-circle.z-depth-1-half(src='/images/profile.jpg')
                             // 用户头像
                             .col-md-2.img-comment
                                 a.name.page-link John Doe
@@ -94,7 +94,7 @@ block content
                             // 2
                         .row.comment(style='display: none')
                             .col-md-1.img-comment
-                                img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                img.comment-profile.rounded-circle.z-depth-1-half(src='/images/profile.jpg')
                             // 用户头像
                             .col-md-2.img-comment
                                 a.name.page-link John Doe
@@ -108,7 +108,7 @@ block content
                             // 提交评论表单
                         .row.comment(style='display: none')
                             .col-md-1.img-comment
-                                img.comment-profile.rounded-circle.z-depth-1-half(src='https://mdbootstrap.com/img/Photos/Avatars/avatar-1-mini.jpg')
+                                img.comment-profile.rounded-circle.z-depth-1-half(src='/images/profile.jpg')
                             // 用户头像
                             .col-md-2.img-comment
                                 a.name.page-link John Doe
@@ -128,27 +128,6 @@ block content
                             small#commentHelpBlockMD.form-text.text-muted 留言不多于60个字符
                             .form-group.row.btn-left
                                 span.btn.btn-primary.mr-3.comment-submit 提交
-    footer.page-footer.font-small.special-color-dark.pt-4
-        .container
-            ul.list-unstyled.list-inline.text-center
-                li.list-inline-item
-                    a.btn-floating.btn-fb.mx-1
-                        i.fa.fa-facebook
-                li.list-inline-item
-                    a.btn-floating.btn-tw.mx-1
-                        i.fa.fa-twitter
-                li.list-inline-item
-                    a.btn-floating.btn-gplus.mx-1
-                        i.fa.fa-google-plus
-                li.list-inline-item
-                    a.btn-floating.btn-li.mx-1
-                        i.fa.fa-linkedin
-                li.list-inline-item
-                    a.btn-floating.btn-dribbble.mx-1
-                        i.fa.fa-dribbble
-        .footer-copyright.text-center.py-3
-            | © 2018 Copyright:
-            a(href='')  DAM GROUP-2
 
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')

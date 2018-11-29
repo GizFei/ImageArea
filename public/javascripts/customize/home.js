@@ -1,9 +1,11 @@
 // onload函数
 window.onload = function(){
     console.log("READY");
-    setTimeout(function () {
-
-    }, 2000);
+    // 添加SnackBar
+    let snackBar = document.createElement("div");
+    document.body.appendChild(snackBar);
+    snackBar.textContent = "消息提示条";
+    snackBar.id = "snackbar";
     // 初始化
     let mCarousel = document.getElementById("mCarousel");
     let item = document.getElementsByClassName("carousel-item active")[0];
@@ -23,6 +25,7 @@ window.onload = function(){
         url: '/images',
         data: {page: "home"},
         success: function (data) {
+            console.log(data);
             for(let i=0;i<5;i++) {
                 //第一个元素
                 if(i === 0) {
@@ -32,12 +35,20 @@ window.onload = function(){
                     item.getElementsByTagName("h3")[0].textContent = data[i].name;
                     item.getElementsByTagName("span")[0].textContent = data[i].tags;
                     item.getElementsByTagName("span")[1].textContent = data[i].likes;
-                    item.getElementsByTagName("span")[2].textContent = data[i].album.albumname;
+                    item.getElementsByTagName("span")[2].innerHTML = "<a href='/access/" + data[i].album.albumurl + "'>" + data[i].album.albumname + "</a>";
                     if(!data[i].download)
-                        $(item.getElementsByTagName("span")[4]).addClass("disabled");
+                        $(item.getElementsByTagName("span")[4].firstChild).addClass("disabled");
+                    else{
+                        item.getElementsByTagName("span")[4].firstChild.href = data[i].url;
+                        $(item.getElementsByTagName("span")[4].firstChild).attr("download", data[i].name + ".png");
+                    }
                     item.getElementsByClassName("ownerAvatar")[0].src = data[i].avatar;
                     item.getElementsByClassName("ownerName")[0].textContent = data[i].owner;
                     item.getElementsByClassName("ownerName")[0].href = '/access/' + data[i].owner;
+                    if(data[i].iflike){
+                        $(".heart").eq(i).attr("rel", 'unlike')
+                            .css("background-position", "right");
+                    }
                     //评论部分
                     if(data[i].messages.length > 0){
                         for(let j=0; j<data[i].messages.length; j++) {
@@ -63,12 +74,20 @@ window.onload = function(){
                     temp.getElementsByTagName("h3")[0].textContent = data[i].name;
                     temp.getElementsByTagName("span")[0].textContent = data[i].tags;
                     temp.getElementsByTagName("span")[1].textContent = data[i].likes;
-                    temp.getElementsByTagName("span")[2].textContent = data[i].album.albumname;
+                    temp.getElementsByTagName("span")[2].innerHTML = "<a href='/access/" + data[i].album.albumurl + "'>" + data[i].album.albumname + "</a>";
                     if(!data[i].download)
-                        $(temp.getElementsByTagName("span")[4]).addClass("disabled");
+                        $(temp.getElementsByTagName("span")[4].firstChild).addClass("disabled");
+                    else{
+                        temp.getElementsByTagName("span")[4].firstChild.href = data[i].url;
+                        $(temp.getElementsByTagName("span")[4].firstChild).attr("download", data[i].name + ".png");
+                    }
                     temp.getElementsByClassName("ownerAvatar")[0].src = data[i].avatar;
                     temp.getElementsByClassName("ownerName")[0].textContent = data[i].owner;
                     temp.getElementsByClassName("ownerName")[0].href = '/access/' + data[i].owner;
+                    if(data[i].iflike){
+                        $('.heart').eq(i).attr("rel", 'unlike')
+                            .css("background-position", "right");
+                    }
                     slides.appendChild(temp);
 
                     //下半区的复制与填充
@@ -97,7 +116,7 @@ window.onload = function(){
             $(".heart").each(likeEvent);
         },
         error: function () {
-            alert("首页加载失败");
+           showMessage("首页加载失败");
         }
     });
 };
@@ -152,12 +171,11 @@ var submitComment = function() {
                 }
             }
             else {
-                alert(res.msg);
+                showMessage(res.msg);
             }
         },
         error: function () {
-            // console.log(data.toString());
-            alert("提交评论失败！");
+            showMessage("提交评论失败");
         },
         dataType:"json"
     });
@@ -177,30 +195,50 @@ $('.mCarousel-li').click( function () {
 var likeEvent = function (idx, ele) {
     $(ele).on('click',function(){
         console.log("click");
-        let photoId = document.getElementsByClassName("carousel-item active")[0].name;
-        let ifLike = document.getElementsByClassName("heart")[0].getAttribute('rel');
+        let item = document.getElementsByClassName("carousel-item active")[0];
+        let photoId = item.name;
+        let ifLike = item.getElementsByClassName("heart")[0].getAttribute('rel');
+        let jIfLike = ifLike === 'like';
+        let owner = item.getElementsByClassName("ownerName")[0].textContent;
+        console.log(photoId, ifLike, owner);
         $.ajax({
             type:'post',
             url:'/like',
-            data: {id: photoId},
-            success: function () {
-                if(ifLike === 'like')
-                {
-                    console.log("like");
-                    $(".heart").eq(idx).addClass("heartAnimation").attr("rel", "unlike").css("background-position", "right");
-                    // 点击后强制使图片停在最右边，
-                }
-                else
-                {
-                    console.log("like");
-                    $(".heart").eq(idx).removeClass("heartAnimation").attr("rel", "like").css("background-position", "left");
-                    //点击后强制使红心变黑，否则显示悬停状态的红色的心
+            data: {id: photoId, ifLike: jIfLike, owner: owner},
+            success: function (res) {
+                console.log(res);
+                if(res.status === 'success'){
+                    if(ifLike === 'like')
+                    {
+                        console.log("like");
+                        $(".heart").eq(idx).addClass("heartAnimation").attr("rel", "unlike").css("background-position", "right");
+                        let likes = parseInt(item.getElementsByTagName("span")[1].textContent);
+                        item.getElementsByTagName("span")[1].textContent = likes + 1;
+                        // 点击后强制使图片停在最右边，
+                    }
+                    else
+                    {
+                        console.log("unlike");
+                        $(".heart").eq(idx).removeClass("heartAnimation").attr("rel", "like").css("background-position", "left");
+                        let likes = parseInt(item.getElementsByTagName("span")[1].textContent);
+                        item.getElementsByTagName("span")[1].textContent = likes - 1;
+                        //点击后强制使红心变黑，否则显示悬停状态的红色的心
+                    }
+                }else{
+                    showMessage(res.msg);
                 }
             },
             error: function () {
-                alert("点赞失败！");
+                showMessage("点赞失败");
             },
             dataType:"json"
         });
     });
+};
+
+var showMessage = function (msg) {
+    $("#snackbar").text(msg).addClass("show");
+    setTimeout(function () {
+        $("#snackbar").text("消息提示条").removeClass("show");
+    }, 3000);
 };

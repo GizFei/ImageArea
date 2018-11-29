@@ -12,7 +12,7 @@ block content
                             .mask.rgba-white-slight
                                 label(for='file0', style='width: 100%; height: 100%; cursor: pointer;')
                                     i.fa.fa-plus.new-file
-                            input#file0(type='file', style='opacity: 0; display: none; ;', accept='image/jpeg, image/x-png')
+                            input#file0(name='image', type='file', style='opacity: 0; display: none;', accept='image/jpeg, image/x-png')
                         .deleteArea.hide.animated
                             i.fa.fa-trash-o.deleteIcon
                 .col-md-8.imageInfo.hide.animated.fadeInLeft
@@ -20,7 +20,7 @@ block content
                         .col-sm-6.mt-2
                             .md-textfield-wrapper
                                 .md-textfield.group
-                                    input(type='text', required='')
+                                    input.imgName(type='text', required='')
                                     i.fa.fa-photo.prefix(style='font-size: 24px;')
                                     span.bar
                                     label 图片名

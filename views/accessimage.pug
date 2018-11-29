@@ -17,17 +17,21 @@ block content
                     .col-md-4.my-4
                         .card
                             .view.overlay
-                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: contain; height: 252px')
+                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: cover; height: 252px')
                                 a(href='javascript:;')
                                     .mask.rgba-white-slight
                             .card-body.px-0.pb-0
-                                h4.card-title.mb-4.mx-3
+                                h4.card-title.mb-0.mx-3
                                     | #{info.name}
                                     button.navbar-toggler.float-right(data-toggle='collapse', data-target='#img-info0', aria-expanded='false')
                                         span.dark-blue-text
-                                            i.fa.fa-commenting-o.fa-1x(style='font-size: 20px; color: #AAA')  (#{info.messages.length})
+                                            i.fa.fa-commenting.fa-1x(style='font-size: 16px; color: #17a2b8')  (#{info.messages.length})
                                     span.float-right
-                                        i.fa.fa-heart-o(style='font-size: 20px; color: #AAA')  (#{info.likes})
+                                        i.fa.fa-heart(style='font-size: 16px; color: #ff3547')  (#{info.likes})
+                                // 时间
+                                p.my-1.mx-3.py-0
+                                    span
+                                        i.fa.fa-calendar-plus-o(style='font-size: 12px; color: #AAA')  #{info.date}
                                 // 标签
                                 .container.mb-3
                                     .row

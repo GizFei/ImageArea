@@ -33,7 +33,6 @@ router.post('/images',function (req, res) {
     // let info = JSON.parse(req.body.imageinfo);
     // console.log("file", req.files);
     // let images = [];
-
     try {
         // res.setHeader("Access-Control-Allow-Origin", "*");
         let form = formidable.IncomingForm();
@@ -48,7 +47,7 @@ router.post('/images',function (req, res) {
             }
         };
         form.parse(req, function (err, fields, files) {
-            console.log(err);
+            // console.log('upload', err);
             if (err) throw err;
             // console.log("files", files);
             // console.log("fields", fields);
@@ -56,16 +55,18 @@ router.post('/images',function (req, res) {
             for(let i = 0; i < parseInt(fields.num); i++){
                 let info = JSON.parse(fields["info" + i]);
                 let file = files['img' + i];
+                // console.log("Upload info", info);
                 let image = {
                     name: info.name,
                     path: file.path,
                     tags: info.tags,
                     business: info.business,        // 是否商用，true或false
                     download: info.download,        // 是否能下载，true或false
+                    watermark: info.watermark,      // 是否添加水印，true或false
                     album: info.album,              // 所在相册
                     date: info.date                 // 上传时间
                 };
-                console.log(image);
+                console.log("Upload image", image);
                 images.push(image);
             }
 
@@ -89,9 +90,13 @@ router.post('/images',function (req, res) {
 });
 
 router.get('/batchimages', function (req, res) {
+    console.log("Batch params", req.query);
     imageOSS.getTagsAndAlbums(req.user.username, function (err, info) {
         console.log(info);
-        res.render('batchupload', {profile: req.profile, tags: info.tags, albums: info.albums});
+        if(req.query.chosen)
+            res.render('batchupload', {profile: req.profile, tags: info.tags, albums: info.albums, chosen: req.query.chosen});
+        else
+            res.render('batchupload', {profile: req.profile, tags: info.tags, albums: info.albums});
     });
 });
 
@@ -121,6 +126,7 @@ router.post('/batchimages', function (req, res) {
                 tags: JSON.parse(fields['tags']),
                 business: fields['business'],
                 download: fields['download'],
+                watermark: fields['watermark'],
                 date: fields['date']
             };
             for(let i = 0; i < parseInt(fields.num); i++){
@@ -129,8 +135,9 @@ router.post('/batchimages', function (req, res) {
                     name: info.name + "_" + i,
                     path: file.path,
                     tags: info.tags,
-                    business: info.business,        // 是否商用，true或false
-                    download: info.download,        // 是否能下载，true或false
+                    business: info.business === 'true',        // 是否商用，true或false
+                    download: info.download === 'true',        // 是否能下载，true或false
+                    watermark: info.watermark === 'true',      // 是否添加水印
                     album: info.album,              // 所在相册
                     date: info.date                 // 上传时间
                 };

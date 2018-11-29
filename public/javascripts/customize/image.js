@@ -8,7 +8,10 @@ window.onload = function(){
         canvasBg.src = $(this).parents(".overlay").children("img")[0].src;
     }).on("click", function () {
         $("#fsImg")[0].src = $(this).parents(".view").children()[0].src;
-        $("#fullscreenModal").modal("show");
+        $("#fullscreenModal").modal("show").on("shown.bs.modal", function () {
+            console.log("shown");
+            $(".navbar").css("margin-right", "");
+        });
     });
 
     $(".navbar-toggler").each(function (idx, ele) {

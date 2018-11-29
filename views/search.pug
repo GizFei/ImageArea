@@ -3,7 +3,7 @@ extends layout
 block content
     // 主体部分
     // 搜索栏
-    .row
+    .row.mx-0
         .input-group.search.px-5
             .input-group-prepend
                 span#basic-text1.input-group-text.cyan.lighten-2
@@ -96,7 +96,7 @@ block content
                                 i.fa.fa-quote-left
                                 | 个人介绍
             // 页码
-            nav.fixed-bottom(aria-label='Page navigation example')
+            nav.my-3(aria-label='Page navigation example')
                 ul#page-par2.pagination.pg-dark-grey.justify-content-center
                     li#ppage1.page-item.active
                         a.page-link 1

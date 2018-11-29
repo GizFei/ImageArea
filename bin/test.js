@@ -23,6 +23,14 @@ async function newDir() {
 }
 
 // newDir();
+async function sUrl(){
+    try{
+        let x = await OSS.get("http://dam-test.oss-cn-beijing.aliyuncs.com/image.jpg");
+        console.log(x);
+    }catch (e) {
+        console.log('NoSuchKey');
+    }
+}
 
 // 列举bucket中的文件
 async function list(dir) {
@@ -94,7 +102,30 @@ async function deleteFile(){
     }
 }
 
-list("");
+async function changeFile(username){
+    try{
+        let result = await OSS.get(username + '/public/info.json');
+        let imageInfo = JSON.parse(result.content.toString());
+        let keys = Object.keys(imageInfo);
+        keys.forEach(function (key) {
+            imageInfo[key].business = imageInfo[key].business === 'true';
+            imageInfo[key].download = imageInfo[key].download === 'true';
+            imageInfo[key].watermark = false;
+        });
+        console.log(imageInfo);
+        await OSS.put(username + '/public/info.json', Buffer.from(JSON.stringify(imageInfo)));
+    }catch(e){
+        console.log(e);
+    }
+}
+
+// changeFile("CHD");
+// changeFile("JNT");
+// changeFile("TK");
+
+// changeFile("Giz");
+// changeFile("TK2");
+sUrl();
 // uploadFile();
 // downloadFile();
 // downloadUsersJson();

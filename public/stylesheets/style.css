@@ -575,3 +575,185 @@ header.wrap {
     display: table-cell;
     vertical-align: middle
 }
+
+/* 首页图片的链接 */
+a.disabled{
+    color: gray;
+}
+
+/*Toast定制*/
+#snackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #00b0ff;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px;
+}
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+.newPhoto{
+    transition: all 0.4s;
+}
+.newPhoto:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+    transition: all 0.4s ease-in-out;
+}
+
+/* boostrap switch */
+.switch label {
+    cursor: pointer
+}
+
+.switch label input[type=checkbox] {
+    opacity: 0;
+    width: 0;
+    height: 0
+}
+
+.switch label input[type=checkbox]:checked+.lever {
+    background-color: #98bdfa
+}
+
+.switch label input[type=checkbox]:checked+.lever:after {
+    background-color: #4285f4;
+    left: 1.5rem
+}
+
+.switch label input[type=checkbox]:checked:not(:disabled)~.lever:active:after {
+    -webkit-box-shadow: 0 .0625rem .1875rem .0625rem rgba(0,0,0,.4),0 0 0 .9375rem rgba(170,102,204,.1);
+    box-shadow: 0 .0625rem .1875rem .0625rem rgba(0,0,0,.4),0 0 0 .9375rem rgba(170,102,204,.1)
+}
+
+.switch label input[type=checkbox]:not(:disabled)~.lever:active:after {
+    -webkit-box-shadow: 0 .0625rem .1875rem .0625rem rgba(0,0,0,.4),0 0 0 .9375rem rgba(0,0,0,.08);
+    box-shadow: 0 .0625rem .1875rem .0625rem rgba(0,0,0,.4),0 0 0 .9375rem rgba(0,0,0,.08)
+}
+
+.switch label input[type=checkbox]:disabled+.lever {
+    cursor: default
+}
+
+.switch label input[type=checkbox]:disabled+.lever:after,.switch label input[type=checkbox]:disabled:checked+.lever:after {
+    background-color: #bdbdbd
+}
+
+.switch label .lever {
+    content: "";
+    display: inline-block;
+    position: relative;
+    background-color: #818181;
+    -webkit-border-radius: .9375rem;
+    border-radius: .9375rem;
+    vertical-align: middle;
+    width: 2.5rem;
+    height: .9375rem;
+    -webkit-transition: background .3s ease;
+    -o-transition: background .3s ease;
+    transition: background .3s ease
+}
+
+.switch label .lever:after {
+    content: "";
+    position: absolute;
+    display: inline-block;
+    background-color: #f1f1f1;
+    -webkit-border-radius: 1.3125rem;
+    border-radius: 1.3125rem;
+    left: -.3125rem;
+    top: -.1875rem;
+    -webkit-box-shadow: 0 .0625rem .1875rem .0625rem rgba(0,0,0,.4);
+    box-shadow: 0 .0625rem .1875rem .0625rem rgba(0,0,0,.4);
+    width: 1.3125rem;
+    height: 1.3125rem;
+    -webkit-transition: left .3s ease,background .3s ease,-webkit-box-shadow 1s ease;
+    transition: left .3s ease,background .3s ease,-webkit-box-shadow 1s ease;
+    -o-transition: left .3s ease,background .3s ease,box-shadow 1s ease;
+    transition: left .3s ease,background .3s ease,box-shadow 1s ease;
+    transition: left .3s ease,background .3s ease,box-shadow 1s ease,-webkit-box-shadow 1s ease
+}
+
+/* 个人相册的图片 */
+.personalImg{
+    transition: all 0.4s;
+    cursor: pointer;
+    user-drag: none;
+}
+.personalImg:hover{
+    transition: all 0.4s;
+    transform: scale(1.2);
+    filter: opacity(0.8);
+}
+.personalImg ~ .mask:hover{
+    background-color: rgba(245,245,245,0.2);
+}
+#deleteAreaImg{
+    position: fixed;
+    top: 40%;
+    padding: 42px 20px 42px 56px;
+    z-index: 100;
+    background-color: #5a95f6;
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+    left: -106px;
+    transition: all 0.4s
+}
+#deleteAreaImg:hover{
+    cursor: pointer;
+    left: -56px;
+}
+
+/* 删除选中按钮 */
+.deleteCC .custom-control-label:hover{
+    cursor: pointer
+}
+.deleteCC .custom-control-label::before {
+    border-radius: 1rem;
+}
+.deleteCC .custom-control-label::before {
+    box-shadow: 0 5px 11px 0 rgba(0,0,0,.18),0 4px 15px 0 rgba(0,0,0,.15)!important;
+    left: -2rem;
+    width: 2rem;
+    height: 2rem;
+}
+.deleteCC .custom-control-label::after {
+    top: .7rem;
+    transform: scale(1.8);
+}
+
+/* 删除标签的按钮 */
+.deleteTag{
+    transition: all 0.3s;
+}
+.deleteTag:hover{
+    cursor: pointer;
+    transform: scale(1.2);
+}

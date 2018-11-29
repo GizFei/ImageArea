@@ -102,6 +102,46 @@ $(window).on("load", function () {
             });
         }
     });
+
+    // 图片识别
+    $("#detectionBtn").on("click", function () {
+        if (files.length === 0) {
+            showMessage("还没上传图片");
+        } else {
+            $("#progressModal2").modal("show");
+            var formData = new FormData();
+            for(let i = 0; i < files.length; i++){
+                formData.append('image' + i, files[i]);
+            }
+            console.log(formData);
+            $.ajax({
+                url: '/experiment/objectdetection',
+                type: 'post',
+                dataType: 'json',
+                data: formData,
+                processData: false, // 告诉jQuery不要去处理发送的数据
+                contentType: false, // 告诉jQuery不要去设置Content-Type请求头,
+                cache: false,
+                success: function (res) {
+                    $("#progressModal2").modal("hide");
+                    let tagsResult = res.tags;
+                    console.log(tagsResult);
+                    for(let i = 0; i < tagsResult.length; i++){
+                        var label = $('<label class="btn btn-primary z-depth-0 btn-sm tag">人物</label>')[0];
+                        label.innerHTML = tagsResult[i];
+                        label.onclick = tagEvent;
+                        tags.push(label.innerHTML);
+                        $(".tag-container")[0].appendChild(label);
+                        // $("input#tag")[0].value = "";
+                    }
+                },
+                error: function () {
+                    $("#progressModal2").modal("hide");
+                    showMessage("识别失败");
+                }
+            });
+        }
+    });
 });
 
 var container = $("#previewContainer")[0];

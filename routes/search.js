@@ -39,10 +39,15 @@ router.post('/', function (req, res) {
             console.log(result);
             res.json(result);
         });
-    }else{
+    }else if(type === "I"){
         techOSS.searchImages(query, function (err, result) {
             let start = (page - 1) * 3;
             result.images = result.images.slice(start, start+3);
+            console.log(result);
+            res.json(result);
+        })
+    }else{
+        techOSS.searchImages(query, function (err, result) {
             console.log(result);
             res.json(result);
         })

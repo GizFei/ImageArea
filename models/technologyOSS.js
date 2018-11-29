@@ -1,6 +1,7 @@
 const Oss = require('ali-oss');
 const random = require('random-js')();
 const cp = require('child_process');
+const fs = require('fs');
 
 // 配置OSS，指定为储存用户头像的Bucket
 const ImageClient = new Oss(
@@ -28,18 +29,32 @@ module.exports.getRandomImages = async function(callback){
     try {
         let usersDir = await getDirs("");
         let images = [];
+        let empty = 0;
         for (let i = 0; i < 5; i++) {
             let x = random.integer(0, usersDir.length - 1);
+            // console.log("user", usersDir[x]);
             let result = await ImageClient.get(usersDir[x] + "public/info.json");
             let info = JSON.parse(result.content.toString());
             let keys = Object.keys(info); // 获得键
+            if(keys.length === 0){
+                i--;
+                empty += 1;
+                if(empty === usersDir.length){
+                    break;
+                }
+            }
             let x2 = random.integer(0, keys.length - 1);
+            // console.log("keys", keys[x2]);
             if(keys[x2]){
                 let infoDetail = info[keys[x2]];
-                infoDetail.messages = await getMessagesOfImage(infoDetail.owner, infoDetail.uuid);;
+                infoDetail.messages = await getMessagesOfImage(infoDetail.owner, infoDetail.uuid);
+                if(infoDetail.watermark){
+                    infoDetail.url = formWatermarkUrl(infoDetail.owner, infoDetail.url);
+                }
                 images.push(infoDetail);
             }else{
-                images.push({});
+                i--;
+                // images.push({});
             }
         }
         callback(null, images);
@@ -195,6 +210,64 @@ module.exports.addImageToTags = async function(imagesInfo, callback){
 };
 
 /**
+ * 移除标签中的图片信息
+ * @param imagesInfo 批图片信息
+ * @param callback 回调函数：callback(err)
+ */
+module.exports.removeImageOfTags = async function(imagesInfo, callback){
+    try { // 获得所有标签文件
+        let result = await TechClient.list({
+            prefix: "",
+            delimiter: '/'
+        });
+        let objects = [];
+        if (result.objects) {
+            result.objects.forEach(function (obj) {
+                objects.push(obj.name);
+            });
+        }
+        // 遍历每个文件
+        for (let i = 0; i < objects.length; i++) {
+            let r = await TechClient.get(objects[i]);
+            let tagInfo = JSON.parse(r.content.toString());
+            if (imagesInfo.length === 0)
+                break;
+            // 遍历每张图片
+            for (let j = 0; j < imagesInfo.length; j++) {
+                let tags = imagesInfo[j].tags; // 所有标签
+                console.log("removeImageOfTags tags", tags, imagesInfo[j].uuid);
+                // 遍历标签
+                for (let m = 0; m < tags.length; m++) {
+                    let tag = tags[m];
+                    if (tagInfo.hasOwnProperty(tag)) {
+                        console.log("removeImageOfTags tag info", tagInfo[tag]);
+                        for (let k = 0; k < tagInfo[tag].length; k++) {
+                            console.log("removeImageOfTags tags compare",tagInfo[tag][k].uuid, imagesInfo[j].uuid);
+                            if (tagInfo[tag][k].uuid === imagesInfo[j].uuid) {
+                                console.log("removeImageOfTags tags uuid", imagesInfo[j].uuid);
+                                tagInfo[tag].splice(k, 1);
+                                // 删除图片中的标签
+                                // imagesInfo[j].tags.splice(m, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+                // 标签搜索完了
+                // if (tags.length === 0) {
+                //     imagesInfo.splice(j, 1);
+                // }
+            }
+            // 上传信息
+            await TechClient.put(objects[i], new Buffer(JSON.stringify(tagInfo)));
+        }
+        callback(null);
+    } catch (e) {
+        callback(e);
+    }
+};
+
+/**
  * 获取所有标签
  * @param callback 回调函数：callback(err, tagsResult)
  * @return {Promise<void>}
@@ -226,24 +299,66 @@ module.exports.getAllTags = async function(callback){
     }
 };
 
-module.exports.detectTagsOfImage = async function(callback){
+module.exports.detectTagsOfImage = async function(files, callback){
     let arg1 = 'E:\\WebStormProject\\ImageArea\\detection';
-    let arg2 = 'C:\\Users\\DELL\\Desktop\\images.json';
+    let arg2 = 'E:\\WebStormProject\\ImageArea\\object_detection\\result.json';
 
-    cp.exec('python C:\\Users\\DELL\\Desktop\\object_detection\\object_detection_image2json.py '+arg1+' '+arg2+' ', (err, stdout, stderr) => {
+    cp.exec('python E:\\WebStormProject\\ImageArea\\object_detection\\object_detection_image2json.py '+arg1+' '+arg2+' ', (err, stdout, stderr) => {
         if (err){
             console.log('stderr', err);
             callback(err, []);
         }
         if (stdout){
             console.log('stdout', stdout);
-            let results = stdout.substr(0, stdout.length-1).split("-");
-            let JSONResult = [];
-            results.forEach(function (r) {
-                JSONResult.push(JSON.parse(r));
-            });
-            console.log(Object.keys(JSONResult[0]));
-            callback(null, Object.keys(JSONResult[0]));
+            for(let i = 0; i < files.length; i++){
+                fs.unlinkSync(files[i]);
+            }
+            let JSONResult = JSON.parse(fs.readFileSync(arg2));
+            let tags = Object.keys(JSONResult);
+            fs.unlinkSync(arg2);
+            console.log(tags);
+            callback(null, tags);
+        }else{
+            callback("NULl", []);
+        }
+    });
+};
+
+module.exports.detectTagsOfImageRelatively = async function(files, callback){
+    let arg1 = 'E:\\WebStormProject\\ImageArea\\detection';
+    let arg2 = 'E:\\WebStormProject\\ImageArea\\object_detection\\result.json';
+
+    cp.exec('python E:\\WebStormProject\\ImageArea\\object_detection\\object_detection_image2json.py '+arg1+' '+arg2+' ', (err, stdout, stderr) => {
+        if (err){
+            console.log('stderr', err);
+            callback(err, []);
+        }
+        if (stdout){
+            console.log('stdout', stdout);
+
+            let JSONResult = JSON.parse(fs.readFileSync(arg2));
+            let tags = Object.keys(JSONResult);
+            let result = {};
+            for(let i = 0; i < files.length; i++){
+                let name = files[i].name;
+                let path = files[i].path;
+                for(let j = 0; j < tags.length; j++){
+                    if(JSONResult[tags[j]].includes(path)){
+                        if(result[name]){
+                            result[name].push(tags[j]);
+                        }else{
+                            result[name] = [];
+                            result[name].push(tags[j]);
+                        }
+                    }
+                }
+                // 删除文件
+                console.log('unlink path', path);
+                fs.unlinkSync(path);
+            }
+            fs.unlinkSync(arg2);
+            console.log(result);
+            callback(null, result);
         }else{
             callback("NULl", []);
         }
@@ -313,23 +428,24 @@ async function searchTagByQuery(query){
             delimiter: '/'
         });
         let objects = [];
-        console.log("searchTagByQuery", objects);
         result.objects.forEach(function (obj) {
             objects.push(obj.name);
         });
+        console.log("searchTagByQuery", objects);
         for (let i = 0; i < objects.length; i++) {
             let r = await TechClient.get(objects[i]);
             let tagInfo = JSON.parse(r.content.toString());
             let tags = Object.keys(tagInfo);
-            tags.forEach(function (tag) {
+            for(let j = 0; j < tags.length; j++){
+                let tag = tags[j];
                 // 匹配字符串，相邻
                 if (tag.match(query)) {
                     let imagesInfo = tagInfo[tag];
-                    imagesInfo.forEach(function (info) {
-                        searchResult.push(info);
-                    });
+                    for(let k = 0; k < imagesInfo.length; k++){
+                        searchResult.push(imagesInfo[k]);
+                    }
                 }
-            });
+            }
         }
         console.log("Search tag by query", searchResult);
         return searchResult;
@@ -382,9 +498,13 @@ async function getMessagesOfImage(username, imgId) {
     try {
         let messages = await getMessages(username);
         let messageDetail = messages[imgId];
-        console.log("Get Comments Of Image", messageDetail);
-        messageDetail.reverse();
-        return messageDetail.slice(0, 3); // 返回三条评论;
+        if(messageDetail){
+            console.log("Get Comments Of Image", messageDetail);
+            messageDetail.reverse();
+            return messageDetail.slice(0, 3); // 返回三条评论;
+        }else{
+            return [];
+        }
     } catch (e) {
         console.log(e);
         return [];
@@ -398,5 +518,17 @@ async function getMessages(username){
     } catch (e) {
         console.log(e);
     }
+}
+
+/**
+ * 生成带图片水印的URL
+ * @param username 用户名
+ * @param imgUrl 图片URL
+ * @return {string} 带水印的图片URL
+ */
+function formWatermarkUrl(username, imgUrl) {
+    let text = Buffer.from("@ " + username).toString("base64");
+    let style = '?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_30,text_' + text + ',color_FFFFFF,t_60,g_se,x_10,y_10';
+    return (imgUrl + style);
 }
 

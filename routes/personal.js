@@ -81,14 +81,12 @@ router.post('/info/introduction', function (req, res) {
 
 router.post('/info/pc', function (req, res) {
     console.log(req.body);
-    let intro = req.body.intro;
-    imageOSS.uploadIntroduction(req.user.username, intro, function (err) {
+    imageOSS.changePrivateCapacity(req.user.username, parseInt(req.body.pc), function (err) {
         if(err){
-            res.json({status: "fail"});
-            throw err;
+            res.json({status: "error", msg: err});
         }
         res.json({status: "success"});
-    });
+    })
 });
 
 router.post('/album/new', function (req, res) {
@@ -113,14 +111,79 @@ router.post('/vip/open', function (req, res) {
     if(email === req.user.email){
         imageOSS.openVip(req.user.username, function (err) {
             if(err){
-                res.json({status: "fail"});
+                res.json({status: "error"});
                 throw err;
             }
             res.json({status: "success"});
         });
     }else{
-        res.json({status: "fail"});
+        res.json({status: "error", msg:"邮箱不正确"});
     }
+});
+
+router.post('/vip/close', function (req, res) {
+    let email = req.body.email;
+    console.log(email);
+    if(email === req.user.email){
+        imageOSS.closeVip(req.user.username, function (err) {
+            if(err){
+                res.json({status: "error"});
+                throw err;
+            }
+            res.json({status: "success"});
+        });
+    }else{
+        res.json({status: "error", msg:"邮箱不正确"});
+    }
+});
+
+router.post('/delete/image', function (req, res) {
+    let uuid = req.body.uuid;
+    let albumname = req.body.albumname;
+    console.log(req.body);
+    imageOSS.deleteImage(req.user.username, albumname, uuid, function (err) {
+        if(err){
+            res.json({ status: 'error', msg: err });
+            throw err;
+        }
+        res.json({ status: 'success', msg: '删除成功' });
+    });
+});
+
+router.post('/delete/batchimage', function (req, res) {
+    let uuids = JSON.parse(req.body.uuids);
+    let albumname = req.body.albumname;
+    console.log("batch delete image", uuids, albumname);
+    imageOSS.deleteBatchImage(req.user.username, albumname, uuids, function (err) {
+        if(err){
+            res.json({ status: 'error', msg: err });
+            throw err;
+        }
+        res.json({ status: 'success', msg: '删除成功' });
+    });
+});
+
+router.post('/info/tag', function (req, res) {
+   console.log(req.body);
+   if(req.body.type === 'add'){
+       // 添加标签
+       imageOSS.addTag(req.user.username, req.body.tag, function (err) {
+           if(err){
+               res.json({ status: 'error', msg: err});
+               throw err;
+           }
+           res.json({ status: 'success'});
+       });
+   }else{
+       // 删除标签
+       imageOSS.removeTag(req.user.username, req.body.tag, function (err) {
+           if(err){
+               res.json({ status: 'error', msg: err});
+               throw err;
+           }
+           res.json({ status: 'success'});
+       });
+   }
 });
 
 function ensureAuthenticated(req, res, next){

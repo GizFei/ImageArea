@@ -1,6 +1,10 @@
 extends layout
 
 block content
+    #deleteAreaImg
+        span.fa.fa-trash-o.mt-0(style='font-size: 36px; margin-left: 16px')
+    button#confirmBD.animated.fadeInLeft.hide.btn.btn-primary.btn-sm.p-0(style='position: fixed; top: 40%; left: 8px; height: 56px; width: 56px; border-radius: 28px') 删除
+    button#dismissBD.animated.fadeInLeft.hide.btn.btn-info.btn-sm.p-0(style='position: fixed; top: 48%; left: 8px; height: 56px; width: 56px; border-radius: 28px') 取消
     .container
         .row
             .col-md-12
@@ -9,41 +13,70 @@ block content
             if infos
                 each info, i in infos
                     .col-md-4.my-4
-                        .card
+                        .card(id=info.uuid)
                             .view.overlay
-                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: contain; height: 252px')
-                                a(href='javascript:;')
-                                    .mask.rgba-white-slight
+                                img.card-img-top.personalImg(src=info.url, alt='Card image cap', style='object-fit: cover; height: 252px')
+                                //a(href='javascript:;')
+                                .mask.rgba-white-slight(draggable='true')
                             .card-body.px-0.pb-0
-                                h5.card-title.mb-4.ml-3
+                                h5.card-title.mb-0.ml-3
                                     | #{info.name}
-                                    button.navbar-toggler.float-right(data-toggle='collapse', data-target='#img-info0', aria-expanded='false')
+                                    button.mx-2.navbar-toggler.float-right(data-toggle='collapse', data-target='#img-info0', aria-expanded='false', style='padding: 0')
                                         span.dark-blue-text
-                                            i.fa.fa-commenting-o.fa-1x(style='font-size: 16px; color: #AAA')  (#{info.messages.length})
+                                            i.fa.fa-commenting.fa-1x(style='font-size: 16px; color: #17a2b8')  (#{info.messages.length})
                                     span.float-right
-                                        i.fa.fa-heart-o(style='font-size: 16px; color: #AAA')  (#{info.likes})
+                                        i.fa.fa-heart(style='font-size: 16px; color: #ff3547')  (#{info.likes})
+                                // 时间
+                                p.my-1.mx-3.py-0
+                                    span
+                                        i.fa.fa-calendar-plus-o(style='font-size: 12px; color: #AAA')  #{info.date}
                                 // 标签
                                 .container.mb-3
                                     .row
                                         .col-sm-12
-                                            each tag, i in info.tags
+                                            each tag, j in info.tags
                                                 label.btn.btn-dark.z-depth-0.btn-sm.disabled.ml-0.px-4 #{tag}
                                 // 留言/评论
                                 #img-info0.collapse(style='background-color: #F1F2F3')
                                     .container
                                         ul.list-unstyled.my-0.pt-3
-                                            each msg, i in info.messages
+                                            each msg, k in info.messages
                                                 li.media.pb-3
                                                     a(href='/access/'+msg.username, title=msg.username)
                                                         img.d-flex.mr-3.comment-profile(src=msg.avatar, alt='头像')
                                                     .media-body
                                                         span.comment-date #{msg.date}
                                                         |&nbsp;&nbsp; #{msg.msg}
+                        .custom-control.hide.deleteCC.custom-checkbox.text-center.animated.fadeInDown.deleteSwitch(style='height: 60px;')
+                            input.custom-control-input.animated.fadeInDown(type='checkbox', id="del" + i)
+                            label.custom-control-label(for='del' + i)
+            // 添加图片
+            .col-md-4.my-4
+                .card-cascade.wider(style='background-color: transparent;')
+                    // Card image
+                    .view.view-cascade.overlay.z-depth-2(style='border-radius: 8px;')
+                        a(href='/upload/batchimages?chosen=' + albumname)
+                            img.card-img-top.newPhoto(src='/images/add.png', alt='Card image cap', style='object-fit: cover; height: 240px', title='点击添加图片')
         #fullscreenModal.modal.animated.zoomIn.fade(tabindex='-1', role='dialog')
             .modal-dialog.animated.zoomIn.faster.modal-fluid.modal-dialog-centered(role='document', style='overflow: hidden')
                 .modal-content.mx-auto(style='background-color: transparent; width: 72%')
                     img#fsImg.img-fluid.mx-auto(src='/images/1.jpg')
-
+        #deleteModal.modal.fade(tabindex='-1', role='dialog')
+            .modal-dialog(role='document', style='overflow: hidden')
+                .modal-content
+                    .modal-header
+                        h5.modal-title 是否删除图片《图片名》？
+                    .modal-footer
+                        button.btn.btn-secondary#cancelDelBtn(data-dismiss='modal') 取消
+                        button.btn.btn-primary#confirmDelBtn 确定
+        #batchDeleteModal.modal.fade(tabindex='-1', role='dialog')
+            .modal-dialog(role='document', style='overflow: hidden')
+                .modal-content
+                    .modal-header
+                        h5.modal-title 是否删除这些图片？
+                    .modal-footer
+                        button.btn.btn-secondary#cancelBDelBtn(data-dismiss='modal') 取消
+                        button.btn.btn-primary#confirmBDelBtn 确定
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
     script(src='/javascripts/bootstrap.min.js')
@@ -51,13 +84,192 @@ block content
     script(src='/javascripts/bootstrap-select.min.js')
     script.
         window.onload = function(){
+            // 添加SnackBar
+            let snackBar = document.createElement("div");
+            document.body.appendChild(snackBar);
+            snackBar.textContent = "消息提示条";
+            snackBar.id = "snackbar";
+
             $(".navbar-toggler").each(function (idx, ele) {
                 $(this).attr("data-target", "#img-info" + String(idx));
                 $(".collapse").eq(idx).attr("id", "img-info" + String(idx));
             });
 
+            $(".modal").on("shown.bs.modal", function () {
+                console.log("shown");
+                $(".navbar").css("margin-right", "");
+            })
             $(".mask").on("click", function () {
                 $("#fsImg")[0].src = $(this).parents(".view").children()[0].src;
                 $("#fullscreenModal").modal("show");
+            });
+
+            $("#deleteAreaImg").on("click", function () {
+                $("#confirmBD").removeClass("hide");
+                $("#dismissBD").removeClass("hide");
+                $(".deleteSwitch").removeClass("hide");
+                $(deleteArea).css("transform", "scale(1)").css("left", "-106px");
+            });
+
+            $("#confirmBD").on("click", function () {
+                let delSwitches = $(".deleteSwitch");
+                delSwitches.each(function (idx, ele) {
+                    if(ele.firstChild.checked){
+                        batchDeleteImgId.push($(".card").eq(idx).attr("id"));
+                    }
+                });
+                $("#batchDeleteModal").modal("show");
+            });
+
+            $("#dismissBD").on("click", function () {
+                $(".deleteSwitch").each(function (idx, ele) {
+                    $(ele).addClass("hide");
+                    $(ele).children()[0].checked = false;
+                });
+                batchDeleteImgId.splice(0, batchDeleteImgId.length);
+                $("#confirmBD").addClass("hide");
+                $("#dismissBD").addClass("hide");
             })
+
+            $("#confirmDelBtn").on("click", function () {
+                console.log("delete");
+                $.ajax({
+                    url: '/personal/delete/image',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        uuid: deleteImgId,
+                        albumname: albumname
+                    },
+                    cache: false,
+                    success: function (res) {
+                        $("#deleteModal").modal("hide");
+                        if(res.status === 'success'){
+                            $("#snackbar").text("删除成功").addClass("show");
+                            setTimeout(function () {
+                                $("#snackbar").text("消息提示条").removeClass("show");
+                                $(".card").eq(deleteCardIdx).addClass("animated zoomOutLeft");
+                                window.location.reload(true); // 刷新页面
+                            }, 2000);
+                        }
+                    },
+                    error: function () {
+                        $("#deleteModal").modal("hide");
+                        $("#snackbar").text("删除失败").addClass("show");
+                        setTimeout(function () {
+                            $("#snackbar").text("消息提示条").removeClass("show");
+                        }, 2000);
+                        $(".card").css("transition", "all 0.3s").css("transform", ""); // 归位
+                    }
+                })
+            });
+
+            $("#cancelDelBtn").on("click", function () {
+                $(".card").css("transition", "all 0.3s").css("transform", "");
+                $(deleteArea).css("transform", "scale(1)").css("left", "-106px");
+            });
+
+            $("#confirmBDelBtn").on("click", function (){
+                console.log("batch delete", batchDeleteImgId);
+                if(batchDeleteImgId.length === 0){
+                    $("#snackbar").text("没有选择图片").addClass("show");
+                    setTimeout(function () {
+                        $("#snackbar").text("消息提示条").removeClass("show");
+                    }, 2000);
+                    return;
+                }
+                $.ajax({
+                    url: '/personal/delete/batchimage',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        uuids: JSON.stringify(batchDeleteImgId),
+                        albumname: albumname
+                    },
+                    cache: false,
+                    success: function (res) {
+                        $("#batchDeleteModal").modal("hide");
+                        if (res.status === 'success') {
+                            $("#snackbar").text("删除成功").addClass("show");
+                            setTimeout(function () {
+                                $("#snackbar").text("消息提示条").removeClass("show");
+                                window.location.reload(true); // 刷新页面
+                            }, 2000);
+                        }
+                    },
+                    error: function () {
+                        $("#batchDeleteModal").modal("hide");
+                        $("#snackbar").text("删除失败").addClass("show");
+                        setTimeout(function () {
+                            $("#snackbar").text("消息提示条").removeClass("show");
+                        }, 2000);
+                    }
+                })
+            });
+
+            $("#cancelBDelBtn").on("click", function (){
+                $("#dismissBD").click();
+            });
+
+            $(deleteArea).on("mouseover", function () {
+                $(this).css("left", "-56px");
+            }).on("mouseout", function () {
+                $(this).css("left", "-106px");
+            })
+        }
+
+        var batchDeleteImgId = [];
+        var clientLeft = 0, clientTop = 0;
+        var albumname = $("h3").eq(0).text();
+        var deleteImgId = "", deleteImgName = "";
+        var deleteArea = $("#deleteAreaImg")[0];
+        var deleteCardIdx = -1;
+        var daLeft = deleteArea.offsetWidth + deleteArea.getBoundingClientRect().x;
+        $(".mask").each(function (idx, ele) {
+            ele.ondragstart = function(e){
+                clientLeft = ele.getBoundingClientRect().x + e.offsetX;
+                clientTop = ele.getBoundingClientRect().y + e.offsetY;
+
+                let img = new Image();
+                img.src = '/images/circle.png';
+                e.dataTransfer.setDragImage(img, 45, 45);
+
+                let t = "translateX(" + (e.clientX - clientLeft) + "px) translateY(" + (e.clientY - clientTop) + "px)";
+                $(".card").eq(idx).css("transition", "none").css("transform", t);
+                console.log("dragstart", clientLeft, clientTop);
+            }
+            $(ele).on("drag", function (e) {
+                let x = e.clientX;
+                let y = e.clientY;
+                if (x !== 0 && y !== 0) {
+                    let t = "translateX(" + (x - clientLeft) + "px) translateY(" + (y - clientTop) + "px)";
+                    $(".card").eq(idx).css("transform", t);
+                    // console.log(ele.getBoundingClientRect().x);
+                    if (ele.getBoundingClientRect().x < daLeft) {
+                        deleteImgId = $(".card").eq(idx).attr("id");
+                        deleteCardIdx = idx;
+                        let h5 = $(".card").eq(idx).find("h5").eq(0).text().split("(");
+                        deleteImgName = h5.slice(0, h5.length - 2).join("").trim();
+                        $(deleteArea).css("transform", "scale(1.2)").css("background-color", "#357bf0").css("left", "-56px");
+                    } else {
+                        deleteImgId = "";
+                        $(deleteArea).css("transform", "scale(1)").css("left", "-106px").css("background-color", "#5a95f6");
+                    }
+                }
+            });
+            $(ele).on("dragend", function (e) {
+                console.log("end", e.offsetX, e.offsetY);
+                if(deleteImgId !== ""){
+                    console.log("delete", deleteImgId, deleteImgName);
+                    $("#deleteModal").find("h5").text("是否删除图片《" + deleteImgName + "》？");
+                    $("#deleteModal").modal("show");
+                }else{
+                    $(".card").eq(idx).css("transition", "all 0.3s").css("transform", "");
+                    $(deleteArea).css("transform", "scale(1)").css("left", "-106px");
+                }
+            });
+        });
+
+        function print(){
+            console.log(batchDeleteImgId, albumname);
         }

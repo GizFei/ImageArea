@@ -68,6 +68,7 @@ block content
                         i.fa.fa-angle-double-left
                         |  点击左侧区域添加图片
         .row.my-2
+            button#detectionBtn.btn.btn-info.ml-0.mr-auto.mt-4(style='width: 125px;') 内容识别
             button#batchUploadBtn.btn.btn-default.btn-rounded.mr-3.ml-auto.mt-4(style='width: 125px;') 批量上传
             button#submit.btn.btn-default.btn-rounded.mr-3.mt-4(style='width: 120px;') 上传
         // Modal
@@ -92,10 +93,17 @@ block content
                     .modal-body
                         .progress.md-progress.primary-color-dark
                             .indeterminate
-
+        #progressModal2.modal.fade(tabindex='-1', role='dialog', data-backdrop='static', data-keyboard='false')
+            .modal-dialog.modal-dialog-centered(role='document')
+                .modal-content
+                    .modal-header
+                        h5.modal-title 努力识别中
+                    .modal-body
+                        .progress.md-progress.primary-color-dark
+                            .indeterminate
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
     script(src='/javascripts/bootstrap.min.js')
     script(src='/javascripts/mdb.min.js')
     script(src="/javascripts/bootstrap-select.min.js")
-    script(src="/javascripts/customize/upload.js")
+    script(src="/javascripts/customize/dusingle.js")

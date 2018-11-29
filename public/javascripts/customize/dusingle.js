@@ -16,7 +16,7 @@ window.onload = function () {
     })
 
     $('#batchUploadBtn').on("click", function () {
-        window.location.href = '/upload/batchimages';
+        window.location.href = '/experiment/objectdetection';
     });
     $("#newTagModal").on("shown.bs.modal", function (e) {
         // 第几张图片
@@ -31,6 +31,51 @@ window.onload = function () {
         tags[tagIndex].push(label.innerText);
         $("input#tag")[0].value = "";
         $("#newTagModal").modal("hide");
+    });
+
+    $("#detectionBtn").on("click", function () {
+        if (files.length === 0) {
+            showMessage("还没上传图片");
+        } else {
+            $("#progressModal2").modal("show");
+            var formData = new FormData();
+            for(let i = 0; i < files.length; i++){
+                formData.append("image" + i, files[i]);
+                formData.append('imgName' + i, names[i]);
+            }
+            console.log(formData);
+            $.ajax({
+                url: '/experiment/detectionrelatively',
+                type: 'post',
+                dataType: 'json',
+                data: formData,
+                processData: false, // 告诉jQuery不要去处理发送的数据
+                contentType: false, // 告诉jQuery不要去设置Content-Type请求头,
+                cache: false,
+                success: function (res) {
+                    $("#progressModal2").modal("hide");
+                    let result = res.result;
+                    let imgNames = Object.keys(result);
+                    console.log(result);
+                    for(let i = 0; i < imgNames.length; i++){
+                        let imgTags = result[imgNames[i]];
+                        for(let j = 0; j < imgTags.length; j++){
+                            var label = $('<label class="btn btn-primary z-depth-0 btn-sm tag">人物</label>')[0];
+                            label.innerHTML = imgTags[j];
+                            label.onclick = tagEvent;
+                            let idx = names.indexOf(imgNames[i]);
+                            console.log(idx);
+                            tags[idx].push(label.innerHTML);
+                            $(".tag-container")[idx].appendChild(label);
+                        }
+                    }
+                },
+                error: function () {
+                    $("#progressModal2").modal("hide");
+                    showMessage("识别失败");
+                }
+            });
+        }
     });
 
     // 上传图片
@@ -170,7 +215,7 @@ var tagEvent = function () {
         var idx = tags[index].indexOf(this.innerText);
         tags[index].splice(idx, 1);
     }
-}
+};
 
 //
 var businessEvent = function () {

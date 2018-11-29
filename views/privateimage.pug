@@ -1,6 +1,8 @@
 extends layout
 
 block content
+    #deleteAreaImg
+        span.fa.fa-trash-o.mt-0(style='font-size: 36px; margin-left: 16px')
     .container
         .row
             .col-md-12
@@ -9,13 +11,13 @@ block content
             if infos
                 each info, i in infos
                     .col-md-4.my-4
-                        .card
+                        .card(id=info.uuid)
                             .view.overlay
-                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: contain; height: 252px')
-                                a(href='javascript:;')
-                                    .mask.rgba-white-slight
+                                img.card-img-top(src=info.url, alt='Card image cap', style='object-fit: cover; height: 252px')
+                                //a(href='javascript:;')
+                                .mask.rgba-white-slight(draggable='true')
                             .card-body.px-0.pb-0
-                                h5.card-title.mb-4.mx-3
+                                h5.card-title.mb-2.mx-3
                                     | #{info.name}
                                     span.float-right
                                         i.fa.fa-calendar-plus-o(style='font-size: 12px; color: #AAA')  #{info.date}
@@ -25,8 +27,135 @@ block content
                                         .col-sm-12
                                             each tag, i in info.tags
                                                 label.btn.btn-dark.z-depth-0.btn-sm.disabled.ml-0.px-4 #{tag}
-
+                        .custom-control.hide.deleteCC.custom-checkbox.text-center.animated.fadeInDown(style='height: 60px;')
+                            input#defaultUnchecked.custom-control-input.animated.fadeInDown(type='checkbox')
+                            label.custom-control-label(for='defaultUnchecked')
+            .col-md-4.my-4
+                .card-cascade.wider(style='background-color: transparent;')
+                    // Card image
+                    .view.view-cascade.overlay.z-depth-2(style='border-radius: 8px;')
+                        a(href='/upload/batchimages?chosen=' + albumname)
+                            img.card-img-top.newPhoto(src='/images/add.png', alt='Card image cap', style='object-fit: cover; height: 240px', title='点击添加图片')
+        #fullscreenModal.modal.animated.zoomIn.fade(tabindex='-1', role='dialog')
+            .modal-dialog.animated.zoomIn.faster.modal-fluid.modal-dialog-centered(role='document', style='overflow: hidden')
+                .modal-content.mx-auto(style='background-color: transparent; width: 72%')
+                    img#fsImg.img-fluid.mx-auto(src='/images/1.jpg')
+        #deleteModal.modal.fade(tabindex='-1', role='dialog')
+            .modal-dialog(role='document', style='overflow: hidden')
+                .modal-content
+                    .modal-header
+                        h5.modal-title 是否删除图片《图片名》？
+                    .modal-footer
+                        button.btn.btn-secondary#cancelDelBtn(data-dismiss='modal') 取消
+                        button.btn.btn-primary#confirmDelBtn 确定
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/javascripts/popper.min.js')
     script(src='/javascripts/bootstrap.min.js')
     script(src='/javascripts/mdb.min.js')
+    script.
+        window.onload = function () {
+            // 添加SnackBar
+            let snackBar = document.createElement("div");
+            document.body.appendChild(snackBar);
+            snackBar.textContent = "消息提示条";
+            snackBar.id = "snackbar";
+
+            $(".mask").on("click", function () {
+                $("#fsImg")[0].src = $(this).parents(".view").children()[0].src;
+                $("#fullscreenModal").modal("show");
+            });
+            $(".modal").on("shown.bs.modal", function () {
+                console.log("shown")
+                $(".navbar").css("margin-right", "");
+            })
+
+            $("#confirmDelBtn").on("click", function () {
+                console.log("delete");
+                $.ajax({
+                    url: '/personal/delete/image',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        uuid: deleteImgId,
+                        albumname: albumname
+                    },
+                    cache: false,
+                    success: function (res) {
+                        $("#deleteModal").modal("hide");
+                        if (res.status === 'success') {
+                            $("#snackbar").text("删除成功").addClass("show");
+                            $(".card").eq(deleteCardIdx).addClass("animated zoomOutLeft");
+                            setTimeout(function () {
+                                $("#snackbar").text("消息提示条").removeClass("show");
+                                window.location.reload(true); // 刷新页面
+                            }, 1000);
+                        }
+                    },
+                    error: function () {
+                        $("#deleteModal").modal("hide");
+                        $("#snackbar").text("删除成功").addClass("show");
+                        setTimeout(function () {
+                            $("#snackbar").text("消息提示条").removeClass("show");
+                        }, 2000);
+                        $(".card").css("transition", "all 0.3s").css("transform", ""); // 归位
+                    }
+                })
+            });
+
+            $("#cancelDelBtn").on("click", function () {
+                $(".card").css("transition", "all 0.3s").css("transform", "");
+                $(deleteArea).css("transform", "scale(1)").css("left", "-106px");
+            });
+        }
+
+        var clientLeft = 0, clientTop = 0;
+        var albumname = $("h3").eq(0).text();
+        var deleteImgId = "", deleteImgName = "";
+        var deleteCardIdx = -1;
+        var deleteArea = $("#deleteAreaImg")[0];
+        var daLeft = deleteArea.offsetWidth + deleteArea.getBoundingClientRect().x;
+        $(".mask").each(function (idx, ele) {
+            ele.ondragstart = function (e) {
+                clientLeft = ele.getBoundingClientRect().x + e.offsetX;
+                clientTop = ele.getBoundingClientRect().y + e.offsetY;
+
+                let img = new Image();
+                img.src = '/images/circle.png';
+                e.dataTransfer.setDragImage(img, 45, 45);
+
+                let t = "translateX(" + (e.clientX - clientLeft) + "px) translateY(" + (e.clientY - clientTop) + "px)";
+                $(".card").eq(idx).css("transition", "none").css("transform", t);
+                console.log("dragstart", clientLeft, clientTop);
+            }
+            $(ele).on("drag", function (e) {
+                let x = e.clientX;
+                let y = e.clientY;
+                if (x !== 0 && y !== 0) {
+                    let t = "translateX(" + (x - clientLeft) + "px) translateY(" + (y - clientTop) + "px)";
+                    $(".card").eq(idx).css("transform", t);
+                    // console.log(ele.getBoundingClientRect().x);
+                    if (ele.getBoundingClientRect().x < daLeft) {
+                        deleteImgId = $(".card").eq(idx).attr("id");
+                        deleteCardIdx = idx;
+                        let h5 = $(".card").eq(idx).find("h5").eq(0).text().split("\xa0");
+                        deleteImgName = h5.slice(0, h5.length - 1).join("").trim();
+                        $(".card").eq(idx).css("transform", t + " scale(0.8)");
+                        $(deleteArea).css("transform", "scale(1.2)").css("background-color", "#357bf0").css("left", "-56px");
+                    } else {
+                        deleteImgId = "";
+                        $(deleteArea).css("transform", "scale(1)").css("left", "-106px").css("background-color", "#5a95f6");
+                    }
+                }
+            });
+            $(ele).on("dragend", function (e) {
+                console.log("end", e.offsetX, e.offsetY);
+                if (deleteImgId !== "") {
+                    console.log("delete", deleteImgId, deleteImgName);
+                    $("#deleteModal").find("h5").text("是否删除图片《" + deleteImgName + "》？");
+                    $("#deleteModal").modal("show");
+                } else {
+                    $(".card").eq(idx).css("transition", "all 0.3s").css("transform", "");
+                    $(deleteArea).css("transform", "scale(1)").css("left", "-106px");
+                }
+            });
+        });

@@ -1,4 +1,10 @@
 $(window).on("load", function () {
+    // 添加SnackBar
+    let snackBar = document.createElement("div");
+    document.body.appendChild(snackBar);
+    snackBar.textContent = "消息提示条";
+    snackBar.id = "snackbar";
+
     $(".selectpicker").selectpicker();
     $(batchInput).on("change", function () {
         if (this.files.length > 0) {
@@ -8,6 +14,10 @@ $(window).on("load", function () {
             $(".instruction").addClass("hide");
             $(".md-textfield :text").val(this.files[0].name.split(".")[0]);
         }
+    });
+    $(".modal").on("shown.bs.modal", function () {
+        console.log("shown");
+        $(".navbar").css("margin-right", "");
     });
     $("#tag-new-btn").on("click", function () {
         var label = $('<label class="btn btn-primary z-depth-0 btn-sm tag">人物</label>')[0];
@@ -26,7 +36,7 @@ $(window).on("load", function () {
 
     $("#submit").on("click", function () {
         if (files.length == 0) {
-            alert("还没选择图片呢");
+            showMessage("还没选择图片呢");
         } else {
             var formData = new FormData();
             var date = new Date();
@@ -50,13 +60,13 @@ $(window).on("load", function () {
                 contentType: false, // 告诉jQuery不要去设置Content-Type请求头,
                 success: function (res) {
                     if (res.status === "success") {
-                        alert("上传成功");
+                        showMessage("上传成功");
                     } else {
-                        alert("上传失败");
+                        showMessage("上传失败");
                     }
                 },
                 error: function () {
-                    alert("后台错误");
+                    showMessage("后台错误");
                 }
             });
         }
@@ -64,12 +74,13 @@ $(window).on("load", function () {
 
     $("#detectionBtn").on("click", function () {
         if (files.length == 0) {
-            alert("还没上传图片");
+            showMessage("还没上传图片");
         } else {
             $("#progressModal").modal("show");
             var formData = new FormData();
             var img = files[0];
-            formData.append("image", img);
+            formData.append("image0", img);
+            formData.append('imgName0', $(".imgName").val());
             console.log(formData);
             $.ajax({
                 url: '/experiment/objectdetection',
@@ -81,7 +92,7 @@ $(window).on("load", function () {
                 cache: false,
                 success: function (res) {
                     $("#progressModal").modal("hide");
-                    let tagsResult = res.tags;
+                    let tagsResult = Object.keys(res.result);
                     console.log(tags);
                     for(let i = 0; i < tagsResult.length; i++){
                         var label = $('<label class="btn btn-primary z-depth-0 btn-sm tag">人物</label>')[0];
@@ -95,7 +106,7 @@ $(window).on("load", function () {
                 },
                 error: function () {
                     $("#progressModal").modal("hide");
-                    alert("识别失败");
+                    showMessage("识别失败");
                 }
             });
         }
@@ -111,8 +122,6 @@ var album = "";
 var tags = [];
 var business = false;
 var download = false;
-
-
 
 var print = function () {
     console.log(name);
@@ -167,3 +176,10 @@ function getObjectURL(file) {
     console.log(url);
     return url;
 }
+
+var showMessage = function (msg) {
+    $("#snackbar").text(msg).addClass("show");
+    setTimeout(function () {
+        $("#snackbar").text("消息提示条").removeClass("show");
+    }, 3000);
+};

@@ -15,11 +15,21 @@ router.get('/tagcloud', function (req, res) {
 });
 
 router.get('/objectdetection', function (req, res) {
-    res.render('objectdetection');
+    // if(req.isAuthenticated()){
+        res.render('detectionupload');
+    // }else{
+    //     res.redirect('/users/login');
+    // }
+});
+router.get('/dusingle', function (req, res) {
+    // if(req.isAuthenticated()){
+    res.render('dusingle');
+    // }else{
+    //     res.redirect('/users/login');
+    // }
 });
 
 router.post('/objectdetection', function (req, res) {
-    console.log("OBJECt");
     let form = formidable.IncomingForm();
     form.uploadDir = path.join(__dirname, '../detection');
     form.keepExtensions = true;
@@ -33,12 +43,48 @@ router.post('/objectdetection', function (req, res) {
     form.parse(req, function (err, fields, files) {
         console.log(err);
         if (err) throw err;
-        console.log("files", files);
-        // console.log("fields", fields);
+        console.log("files", files['image0']);
+        console.log("fields", fields);
+        let theFiles = [];
+        for(let i = 0; i < Object.keys(files).length; i++){
+            theFiles.push(files["image" + i].path);
+        }
+        console.log(theFiles);
 
-        techOSS.detectTagsOfImage(function (err, tags) {
+        techOSS.detectTagsOfImage(theFiles, function (err, tags) {
             console.log("tags", tags);
             res.json({tags: tags});
+        });
+    });
+});
+router.post('/detectionrelatively', function (req, res) {
+    let form = formidable.IncomingForm();
+    form.uploadDir = path.join(__dirname, '../detection');
+    form.keepExtensions = true;
+    form.encoding = "utf-8";
+    form.onPart = function (part) {
+        // console.log("part", part);
+        if (part.filename !== '') {
+            form.handlePart(part);
+        }
+    };
+    form.parse(req, function (err, fields, files) {
+        console.log(err);
+        if (err) throw err;
+        console.log("files", files['image0']);
+        console.log("fields", fields);
+        let theFiles = [];
+        for(let i = 0; i < Object.keys(fields).length; i++){
+            theFiles.push({
+                name: fields["imgName" + i],
+                path: files["image" + i].path
+            });
+        }
+        console.log(theFiles);
+
+        techOSS.detectTagsOfImageRelatively(theFiles, function (err, result) {
+            console.log("tags", result);
+            res.json({result: result});
         });
     });
 });

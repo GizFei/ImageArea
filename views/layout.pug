@@ -10,7 +10,7 @@ html(lang='en')
         link(rel="stylesheet", href="/stylesheets/bootstrap-select.min.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
     body(style='background-color: #F3F4F5')
-        nav.navbar.navbar-expand-lg.navbar-dark.py-2.px-4(class=(active == 'Home' ? "fixed-top" : "primary-color sticky-top"))
+        nav.navbar.navbar-expand-lg.navbar-dark.py-2.px-4(class=(active == 'Home' ? "fixed-top" : "primary-color sticky-top"), style='transition: all 0.5s')
             a.navbar-brand(href='/') ImageArea
             button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNav', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
                 span.navbar-toggler-icon
@@ -23,9 +23,9 @@ html(lang='en')
                     li.nav-item.dropdown.nav-li
                         a#navbarDropdownMenuLink.nav-link.dropdown-toggle(data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') 试验功能
                         .dropdown-menu.dropdown-primary(aria-labelledby='navbarDropdownMenuLink')
-                            a.dropdown-item(href='javascript:;') 群组
+                            // a.dropdown-item(href='javascript:;') 群组
                             a.dropdown-item(href='/experiment/tagcloud') 标签云
-                            a.dropdown-item(href='/experiment/objectdetection') 内容检索
+                            a.dropdown-item(href='/experiment/dusingle') 内容检索上传
                             a.dropdown-item(href='javascript:;') 图片处理(PS)版本管理
                             // 可选，用于VIP充值
                 form.form-inline.my-lg-0(method='get', action='/search', class=(active == 'Home' ? 'hide':''))
@@ -47,3 +47,27 @@ html(lang='en')
                                 a.dropdown-item(href='/upload/images') 上传图片
                                 a.dropdown-item(href='/users/logout') 退出账号
         block content
+        footer.page-footer.font-small.special-color-dark.pt-4(style='margin-top: 10rem')
+            .container
+                ul.list-unstyled.list-inline.text-center
+                    li.list-inline-item.mr-3
+                        a.btn-floating.btn-fb.mx-1
+                            | 小组成员：
+                    li.list-inline-item
+                        a.btn-floating.btn-fb.mx-1
+                            | 郭勇飞
+                    li.list-inline-item
+                        a.btn-floating.btn-tw.mx-1
+                            | 李新豪
+                    li.list-inline-item
+                        a.btn-floating.btn-gplus.mx-1
+                            | 陈浩东
+                    li.list-inline-item
+                        a.btn-floating.btn-li.mx-1
+                            | 加那提·沙依道拉
+                    li.list-inline-item
+                        a.btn-floating.btn-dribbble.mx-1
+                            | 杨玉国
+            .footer-copyright.text-center.py-3
+                | © 2018 Copyright:
+                a(href='javascript:;')  DAM GROUP-2

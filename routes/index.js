@@ -31,7 +31,13 @@ router.get('/', function (req, res) {
 
 router.post('/images', function (req, res) {
     // console.log("techOSS", techOSS.getRandomImages);
-    techOSS.getRandomImages(function (err, images) {
+    techOSS.getRandomImages(async function (err, images) {
+        if(req.isAuthenticated()){
+            for(let i = 0; i < images.length; i++){
+                if(images[i].name)
+                    images[i].iflike = await imageOSS.ifUserLikeTheImage(req.user.username, images[i].uuid);
+            }
+        }
         console.log(images);
         res.json(images);
     });
@@ -63,30 +69,41 @@ router.post('/messages', function (req, res) {
 });
 
 router.post('/like', function (req, res) {
-    console.log("like", req.body.id);
+    console.log("like", req.body);
     // 点赞
-    // if(req.isAuthenticated()){ // 已登录
-    //     let message = {
-    //         id: req.body.id,
-    //         msg: req.body.msg,
-    //         date: req.body.date,
-    //         owner: req.body.owner
-    //     };
-    //     console.log("提交评论", message);
-    //     imageOSS.uploadMessage(req.user.username, message, function (err, msg) {
-    //         if (err) {
-    //             res.json({ status: 'error', msg: err });
-    //             throw err;
-    //         }
-    //         res.json({status: 'success', messages: msg });
-    //     });
-    // }else{
-    //     res.json({
-    //         status: "error",
-    //         msg: "未登录"
-    //     });
-    // }
-    res.json({status: "success"});
+    if(req.isAuthenticated()){ // 已登录
+        let imgInfo = {
+            uuid: req.body.id,
+            owner: req.body.owner
+        };
+        let ifLike = req.body.ifLike === 'true'; // 是否喜爱
+        console.log("喜爱", imgInfo);
+        if(ifLike){
+            imageOSS.addLikeToImage(req.user.username, imgInfo, function (err) {
+                if(err){
+                    res.json({ status: 'error', msg: "后台错误" });
+                    throw err;
+                }else{
+                    res.json({ status: 'success', msg: "点赞成功" });
+                }
+            });
+        }else{
+            imageOSS.removeLikeOfImage(req.user.username, imgInfo, function (err) {
+                if(err){
+                    res.json({ status: 'error', msg: "后台错误" });
+                    throw err;
+                }else{
+                    res.json({ status: 'success', msg: "取消点赞成功" });
+                }
+            });
+        }
+    }else{
+        res.json({
+            status: "error",
+            msg: "未登录"
+        });
+    }
+    // res.json({status: "success"});
 });
 
 function ensureAuthenticated(req, res, next){

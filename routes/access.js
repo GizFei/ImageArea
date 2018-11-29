@@ -2,7 +2,19 @@ const express = require('express');
 const router = express.Router();
 const imageOSS = require('../models/imageAreaOSS');
 
-// TODO 判断是否有用户登录，有则更新导航栏
+router.get('*', function (req, res, next) {
+    if(req.isAuthenticated()){
+        imageOSS.getUserInformation(req.user.username, function (err, userInfo) {
+            console.log("Avatar", userInfo.avatar);
+            req.profile = userInfo.avatar;
+            next();
+        });
+    }else {
+        req.profile = "";
+        next();
+    }
+});
+
 router.get('/:username', function (req, res, next) {
     let username = req.params.username;
     if(req.isAuthenticated()){
@@ -18,12 +30,12 @@ router.get('/:username', function (req, res, next) {
         for(let i = 0; i < albums.length; i++){
             albums[i].albumurl = '/access/' + username + '/public/' + albums[i].albumname;
         }
-        // TODO 返回不带用户的相册信息，重新写一个模板
-        res.render("accessalbum", {username: username, albums: albums});
+        res.render("accessalbum", {username: username, albums: albums, profile: req.profile});
     });
 });
 
-router.get('/:username/public/:albumname', function (req, res, next) {
+// 访问相册里的具体图片
+router.get('/:username/public/:albumname', function (req, res) {
     let username = req.params.username;
     let albumname = req.params.albumname;
     let albumInfo = {
@@ -31,16 +43,14 @@ router.get('/:username/public/:albumname', function (req, res, next) {
         policy: "public",
         albumurl: username + '/public/' + albumname + '/'
     };
-    imageOSS.getImages(username, albumInfo, function (err, infos) {
+    imageOSS.getAccessImages(username, albumInfo, function (err, infos) {
         if(err) throw err;
         imageOSS.getUserInformation(username, function (err, info) {
             console.log("GET INFO",infos);
             // res.header("Access-Control-Allow-Origin", "*");
-            return res.render("accessimage", {username: username, avatar: info.avatar, albumname: albumname, infos: infos});
+            res.render("accessimage", {username: username, avatar: info.avatar, albumname: albumname, infos: infos, profile: req.profile});
         });
     });
 });
-
-// TODO 访问相册里的具体图片
 
 module.exports = router;

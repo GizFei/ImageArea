@@ -3,61 +3,269 @@ html(lang='en')
     head
         meta(charset='UTF-8')
         title 标签云
+        // CSS样式引用，已写好，不用修改
         link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css', type='text/css')
+        link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+        link(rel='stylesheet', href='/stylesheets/mdb.min.css')
         style.
-            html, body {
-                padding: 0;
-                margin: 0;
+            html {
+                position: relative;
                 height: 100%;
             }
-            #container {
+            body {
+                position: relative;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                background-image: url('/images/tagCloudBg.jpg');
+                background-size: cover
+            }
+            #myTagContainer {
+                position: relative;
                 width: 100%;
                 height: 100%;
+                /*            background-color:darkturquoise; */
+                text-align: center;
+            }
+            #tagCanvas {
                 position: relative;
-                background-size: cover;
-                background-image: url('/images/tagCloudBg.jpg');
+                max-width: 1200px;
+                width: 100%;
+                margin: auto;
+                padding: 0;
+            }
+            #myImgContainer {
+                z-index: 11;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                /*            background-color:cornflowerblue; */
+                text-align: center;
+                top: 0;
+                left: 0;
+                opacity: 0;
+                transform: scale(0.1);
+                display: none;
+            }
+            #imgCanvas {
+                position: relative;
+                z-index: 10;
+                max-width: 1200px;
+                width: 100%;
+                margin: auto;
+                padding: 0;
+            }
+            #closeBtn {
+                z-index: 100;
+                position: absolute;
+                cursor: pointer;
+                opacity: 0.8
+            }
+            #closeBtn:hover {
+                opacity: 1;
             }
             label {
                 position: absolute;
-                background-color: whitesmoke;
-                padding: 12px 24px;
-                border-radius: 6px;
-                box-shadow: 0px 0px 10px 4px rgba(100, 100, 100, 0.5);
-                transition: all 0.3s;
+                top: 10px;
+                z-index: 50;
+                left: 10px;
             }
-            label:hover {
-                transition: all 0.3s;
+            label a {
+                cursor: pointer;
+                font-family: consolas;
+                font-size: 18px;
+                color: white;
+                opacity: 0.8;
+            }
+            label a:hover {
                 opacity: 1;
-                cursor: pointer;
-                color: cornflowerblue;
-            }
-            #tags-container{
-                width: 100%;
-                height: 100%;
-                margin: auto;
-                min-width: 800px;
-                min-height: 600px;
-                padding: auto;
-            }
-            .icon-back {
-                position: absolute;
-                width: 42px;
-                height: 42px;
-                background-color: cornflowerblue;
-                border-radius: 21px;
-                text-align: center;
-            }
-            .icon-back:hover {
-                background-color: steelblue;
-                cursor: pointer;
+                color: white;
             }
     body
-        #container
-            .icon-back
-                span.fa.fa-angle-left.fa-2x(style='position: relative; color: white; margin-top: 3px; margin-right: 2px')
-            #tags-container.tag-cloud
-                if tags
-                    each tag, i in tags
-                        label.test(title=tag.frequency) #{tag.name}
+        label.back
+            a(href='/') Image Area
+        // 标签容器
+        #myTagContainer
+            canvas#tagCanvas(width='1200', height='720')
+                p 不能启动TagCanvas
+                ul
+                    if tags
+                        each tag, i in tags
+                            li
+                                a.tag(href='javascript:;', style='font-size: 90pz;', title=tag.frequency) #{tag.name}
+        // 图片容器
+        #myImgContainer
+            span#closeBtn.fa.fa-minus.fa-1x.text-white.fa-2x.my-2
+            canvas#imgCanvas(width='1200', height='720')
+                p 不能启动TagCanvas
+        // 图片列表
+        #imgs(style='display: none;')
+            a(href='javascripts:;')
+                img(src='/images/1.jpg', width='160', height='90')
+            a(href='javascripts:;')
+                img(src='/images/1.jpg', width='160', height='90')
+            a(href='javascripts:;')
+                img(src='/images/1.jpg', width='160', height='90')
+            a(href='javascripts:;')
+                img(src='/images/1.jpg', width='160', height='90')
+            a(href='javascripts:;')
+                img(src='/images/1.jpg', width='160', height='90')
+            a(href='javascripts:;')
+                img(src='/images/1.jpg', width='160', height='90')
         script(src='/javascripts/jquery-3.3.1.min.js')
-        script(src='/javascripts/customize/tagcloud.js')
+        script(src='/javascripts/popper.min.js')
+        script(src='/javascripts/bootstrap.min.js')
+        script(src='/javascripts/mdb.min.js')
+        script(src='/javascripts/jquery.tagcanvas.min.js')
+        script(src='/javascripts/dynamics.min.js')
+        script.
+            window.onload = function() {
+                initFontSize();
+                try {
+                    TagCanvas.Start("tagCanvas");
+                    if (!$('#tagCanvas').tagcanvas({
+                        textColour: '#fafafa',
+                        outlineColour: '#00bcd4',
+                        reverse: true,
+                        depth: 0.6,
+                        maxSpeed: 0.04,
+                        minSpeed: 0.001,
+                        zoomMax: 3.0,
+                        zoomMin: 1,
+                        clickToFront: 1000,
+                        fadeIn: 1000,
+                        outlineMethod: "block",
+                        outlineRadius: 16,
+                        shadow: "#00bcd4",
+                        shadowBlur: 1,
+                        shadowOffset: [0.5, 0.5],
+                        textScale: 2,
+                        weight:true,
+                        weightMode: "size",
+                        // textHeight: 24,
+                        padding: 8,
+                        minBrightness: 0.4,
+                        dragControl: true,
+                        shape: 'vcylinder',
+                        tooltip: "native",
+                        tootipDelay: 100
+                    })) {
+                        console.log("Something went wrong, hide the canvas container.");
+                        $('#myTagContainer').hide();
+                    }
+                } catch (e) {
+                    $('#myTagContainer').hide();
+                }
+
+                $("#closeBtn").on("click", function() {
+                    hide($("#myImgContainer")[0]);
+                    show($("#myTagContainer")[0]);
+                    show(document.querySelector(".back"));
+                });
+                $(".tag").on("click", function() {
+                    let value = this.innerHTML;
+                    console.log("search value: ", value);
+                    $.ajax({
+                        type: 'post',
+                        url: '/search',
+                        dataType: 'json',
+                        data: {page_id: "1", word: value, type: 'ALLI'},                  // 需要返回图像和用户的结果数目
+                        success: function (data) {
+                            $("#imgs").html("");
+                            let imgNode = $('<a href="javascripts:;"><img src="" width=160, height=90></a>')[0];
+                            console.log(data);
+                            for(let i = 0; i < data.images.length; i++){
+                                let newNode = imgNode.cloneNode(true);
+                                $(newNode).attr("title", data.images[i].name).attr("href", "/access/" + data.images[i].owner);
+                                $(newNode).children().eq(0).attr("src", data.images[i].url);
+                                $("#imgs")[0].appendChild(newNode);
+                            }
+                            initImgCanvas();
+                            hide($("#myTagContainer")[0]);
+                            hide(document.querySelector(".back"));
+                            dynamics.setTimeout(showImages, 1000);
+                            showImages();
+                        },
+                        error: function () {
+                            console.log("失败");
+                        }
+                    });
+                });
+            }
+            var initImgCanvas = function() {
+                try {
+                    TagCanvas.Start("imgCanvas");
+                    if (!$('#imgCanvas').tagcanvas({
+                        outlineColour: '#FFFFFF',
+                        reverse: true,
+                        depth: 0.6,
+                        maxSpeed: 0.04,
+                        minSpeed: 0.001,
+                        zoomMax: 3.0,
+                        zoomMin: 1,
+                        clickToFront: 1000,
+                        fadeIn: 1000,
+                        outlineMethod: "size",
+                        outlineIncrease: 44,
+                        shadow: "#e0e0e0",
+                        shadowBlur: 16,
+                        shadowOffset: [4, 4],
+                        padding: 8,
+                        minBrightness: 0.4,
+                        dragControl: true,
+                        tooltip: "native",
+                        tootipDelay: 100
+                    }, "imgs")) {
+                        console.log("Something went wrong, hide the canvas container.");
+                        $('#myImgContainer').hide();
+                    }
+                } catch (e) {
+                    $('#myImgContainer').hide();
+                }
+            }
+            var showImages = function() {
+                console.log("show");
+                $("#myImgContainer").css("display", "block");
+                dynamics.animate($("#myImgContainer")[0], {
+                    opacity: 1,
+                    scale: 1
+                }, {
+                    type: dynamics.gravity,
+                    bounciness: 224,
+                    elasticity: 100,
+                    duration: 1000
+                });
+            }
+            var show = function(element) {
+                dynamics.animate(element, {
+                    opacity: 1,
+                    scale: 1
+                }, {
+                    type: dynamics.easeIn,
+                    duration: 800,
+                    friction: 100
+                });
+            }
+            var hide = function(element) {
+                dynamics.animate(element, {
+                    opacity: 0,
+                    scale: 0
+                }, {
+                    type: dynamics.easeInOut,
+                    duration: 800,
+                    friction: 100
+                });
+            }
+
+            var initFontSize = function () {
+                let frequency = [];
+                $(".tag").each(function (idx, ele) {
+                    frequency.push(parseInt(ele.title));
+                });
+                let maxFreq = Math.max.apply(null, frequency);
+                let minFreq = Math.min.apply(null, frequency);
+                $(".tag").each(function (idx, ele) {
+                    let fontSize = ((parseInt(ele.title) - minFreq) / (maxFreq - minFreq)) * 26 + 16 + "px";
+                    $(ele).css('font-size', fontSize);
+                });
+            }

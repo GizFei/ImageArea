@@ -39,12 +39,13 @@ module.exports.createUserArea = async function(newUser, callback){
                 {
                     albumname: '默认相册',
                     policy: 'public',
-                    albumurl: newUser.username + '/public/默认相册',
+                    albumurl: newUser.username + '/public/默认相册/', // 云端路径
                 }
             ],    		 // 所有的相册名
             ingroup: "",                // 所属群组
             privateused: 0,  				// 已用私密量,
-            capacityused: 0 				// 已用总量
+            capacityused: 0, 				// 已用总量
+            likes: []                       // 点赞（喜爱）的图片ID
         };
         let result1 = await ImageClient.put(newUser.username + "/public/", new Buffer("Hello"));
         let result2 = await ImageClient.put(newUser.username + "/private/", new Buffer("Hello"));
@@ -100,7 +101,7 @@ module.exports.uploadImages = async function(username, images, callback) {
             let image = fs.createReadStream(info.path);
             // 判断是否超出私密量或总量
             if((userInfo.capacityused + 1) > userInfo.capacity){
-                callback("问题到达上限");
+                callback("总量到达上限");
                 return;
             }else{
                 // 总量加1
@@ -125,6 +126,7 @@ module.exports.uploadImages = async function(username, images, callback) {
                 tags: info.tags,
                 business: info.business,        // 是否商用，true或false
                 download: info.download,        // 是否能下载，true或false
+                watermark: info.watermark,       // 是否添加水印
                 album: getAlbumDetail(albumInfo, info.album),    // 所在相册信息
                 likes: 0,                       // 点赞数
                 date: info.date
@@ -192,6 +194,38 @@ module.exports.getImages = async function(username, albumInfo, callback) {
             }else{
                 infos.push(info);
             }
+            console.log("INFO", info);
+        }
+        callback(null, infos);
+    }catch (e) {
+        callback(e, []);
+    }
+};
+
+/**
+ * 从云端获取某个相册的图片（访问他人的图片）
+ * @param username 用户名
+ * @param albumInfo 相册信息
+ * @param callback 回调函数：callback(err, infos)
+ * @returns {object} 图片信息数组
+ */
+module.exports.getAccessImages = async function(username, albumInfo, callback) {
+    try{
+        let dir = albumInfo.albumurl;
+        let objects = await getObjectsFromDir(dir);
+        console.log("get access Images", objects);
+        let imagesInfo = await getPublicImagesInfo(username);
+        let infos = [];
+        for(let i = 0; i < objects.length; i++){
+            let result = await ImageClient.get(objects[i]);
+            let uuid = result.res.headers['x-oss-meta-uuid'];
+            let info = imagesInfo[uuid];
+
+            info.messages = await getMessagesOfImage(info.owner, info.uuid);
+            if(info.watermark){
+                info.url = formWatermarkUrl(info.owner, info.url);
+            }
+            infos.push(info);
             console.log("INFO", info);
         }
         callback(null, infos);
@@ -346,9 +380,74 @@ module.exports.getMessagesOfImage = async function(username, imgId, callback) {
     }
 };
 
-
+/**
+* 用户点赞一张图片
+* @param username 用户名
+* @param imgInfo 图片简要信息
+* {
+*     uuid: "imgId",
+*     owner: // 图片拥有者
+* }
+* @param callback 回调函数：callback(err)
+*/
 module.exports.addLikeToImage = async function(username, imgInfo, callback){
+    try{
+        let userInfo = await getUserInfo(username);
+        userInfo.likes.push(imgInfo.uuid);
+        await uploadUserInfo(username, userInfo);
+        let imageInfo = await getPublicImagesInfo(imgInfo.owner);
+        imageInfo[imgInfo.uuid].likes += 1;
+        await uploadPublicImagesInfo(imgInfo.owner, imageInfo);
+        callback(null);
+    }catch(e){
+        console.log(e);
+        callback(e);
+    }
+};
 
+/**
+ * 取消点赞
+ * @param username 用户名
+ * @param imgInfo 图片信息
+ * {
+ *     uuid: // 图片的ID
+ *     owner: // 拥有者
+ * }
+ * @param callback 回调函数：callback(err)
+ */
+module.exports.removeLikeOfImage = async function(username, imgInfo, callback){
+    try{
+        let userInfo = await getUserInfo(username);
+        let idx = userInfo.likes.indexOf(imgInfo.uuid);
+        if(idx !== -1){
+            userInfo.likes.splice(idx, 1);
+            await uploadUserInfo(username, userInfo);
+            let imageInfo = await getPublicImagesInfo(imgInfo.owner);
+            imageInfo[imgInfo.uuid].likes -= 1;
+            await uploadPublicImagesInfo(imgInfo.owner, imageInfo);
+            callback(null);
+        }else{
+            callback("该用户还没喜爱这张图片");
+        }
+    }catch(e){
+        console.log(e);
+        callback(e);
+    }
+};
+
+/**
+ * 判断用户是否喜爱该图片
+ * @param username 用户名
+ * @param imgId 图片ID
+ */
+module.exports.ifUserLikeTheImage = async function(username, imgId){
+    try {
+        let userInfo = await getUserInfo(username);
+        return userInfo.likes.includes(imgId);
+    } catch (e) {
+        console.log("If user like the image", e);
+        return false;
+    }
 };
 
 async function getMessages(username){
@@ -490,6 +589,21 @@ module.exports.openVip = async function(username, callback){
         callback(e);
     }
 };
+/**
+ * 注销会员
+ * @param username 用户名
+ * @param callback 回调函数：callback(err)
+ */
+module.exports.closeVip = async function(username, callback){
+    try{
+        let userInfo = await getUserInfo(username);
+        userInfo.vip = false;
+        await uploadUserInfo(username, userInfo);
+        callback(null);
+    }catch (e) {
+        callback(e);
+    }
+};
 
 /**
  * 更改会员用户私密量
@@ -511,18 +625,168 @@ module.exports.changePrivateCapacity = async function(username, pc, callback){
 /**
  * 会员用户添加新的标签
  * @param username 用户名
- * @param tags 新添加的标签列表
+ * @param tag 新添加的标签
  * @param callback 回调函数：callback(err)
  */
-module.exports.addTag = async function(username, tags, callback){
+module.exports.addTag = async function(username, tag, callback){
     try{
         let userInfo = await getUserInfo(username);
-        tags.forEach(function(tag){
-            userInfo.tags.push(tag);
-        });
-        let result = await uploadUserInfo(username, userInfo);
+        userInfo.tags.push(tag);
+        await uploadUserInfo(username, userInfo);
         callback(null);
     }catch (e) {
+        callback(e);
+    }
+};
+
+/**
+ * 会员用户删除标签
+ * @param username 用户名
+ * @param tag 需要删除的标签
+ * @param callback 回调函数：callback(err)
+ */
+module.exports.removeTag = async function(username, tag, callback){
+    try{
+        let userInfo = await getUserInfo(username);
+        let tags = userInfo.tags;
+        let idx = tags.indexOf(tag);
+        console.log("remove tag", tags);
+        userInfo.tags.splice(idx, 1);
+        console.log("remove tag", tags);
+        await uploadUserInfo(username, userInfo);
+        callback(null);
+    }catch (e) {
+        callback(e);
+    }
+};
+
+/**
+ * 删除云端的图片
+ * @param username 用户名
+ * @param albumname 相册名
+ * @param uuid 图片ID
+ * @param callback 回调函数：callback(err)
+ */
+// TODO 图片回收站
+module.exports.deleteImage = async function(username, albumname, uuid, callback){
+    try {
+        let userInfo = await getUserInfo(username);
+        for(let i = 0; i < userInfo.albums.length; i++){
+            if(userInfo.albums[i].albumname === albumname){
+                var policy = userInfo.albums[i].policy;
+                break;
+            }
+        }
+        if(policy === 'public'){
+            let imagesInfo = await getPublicImagesInfo(username);
+            let imgInfo = imagesInfo[uuid];
+            delete imagesInfo[uuid];
+            userInfo.capacityused -= 1; // 总量减1
+            await uploadPublicImagesInfo(username, imagesInfo);
+            await uploadUserInfo(username, userInfo);
+            if(imgInfo){
+                // 删除云端的图片
+                let object = formImagePath(username, 'public', albumname, imgInfo.name, imgInfo.url);
+                console.log("delete Img", object);
+                await ImageClient.delete(object);
+                // 删除对应的标签的信息
+                techOSS.removeImageOfTags([imgInfo], function (err) {
+                    callback(err);
+                });
+            }else{
+                callback(null);
+            }
+        }else{
+            let imagesInfo = await getPrivateImagesInfo(username);
+            let imgInfo = imagesInfo[uuid];
+            // 总量、私密量都减1
+            userInfo.capacityused -= 1;
+            userInfo.privateused -= 1;
+            delete imagesInfo[uuid];
+            await uploadPrivateImagesInfo(username, imagesInfo);
+            await uploadUserInfo(username, userInfo);
+            if(imgInfo){
+                // 删除云端的图片
+                let object = formImagePath(username, 'private', albumname, imgInfo.name, imgInfo.url);
+                console.log("delete private Img", object);
+                await ImageClient.delete(object);
+                // 删除对应的标签中的信息
+                techOSS.removeImageOfTags([imgInfo], function (err) {
+                    callback(err);
+                });
+            }else{
+                callback(null);
+            }
+        }
+    } catch (e) {
+        callback(e);
+    }
+};
+
+/**
+ * 删除云端的图片
+ * @param username 用户名
+ * @param albumname 相册名
+ * @param uuids 图片IDS
+ * @param callback 回调函数：callback(err)
+ */
+// TODO 图片回收站
+module.exports.deleteBatchImage = async function(username, albumname, uuids, callback){
+    try {
+        let userInfo = await getUserInfo(username);
+        for(let i = 0; i < userInfo.albums.length; i++){
+            if(userInfo.albums[i].albumname === albumname){
+                var policy = userInfo.albums[i].policy;
+                break;
+            }
+        }
+        console.log("deleteBatchImage", uuids);
+        if(policy === 'public'){
+            let imagesInfo = await getPublicImagesInfo(username);
+            let imagesInfoToBeDelete = [];
+            for(let i = 0; i < uuids.length; i++){
+                let imgInfo = imagesInfo[uuids[i]];
+                delete imagesInfo[uuids[i]];
+                userInfo.capacityused -= 1;
+                console.log(imgInfo);
+                if(imgInfo){
+                    // 删除云端的图片
+                    let object = formImagePath(username, 'public', albumname, imgInfo.name, imgInfo.url);
+                    console.log("delete Img", object);
+                    await ImageClient.delete(object);
+                    // 添加
+                    imagesInfoToBeDelete.push(imgInfo);
+                }
+            }
+            await uploadPublicImagesInfo(username, imagesInfo);
+            await uploadUserInfo(username, userInfo);
+            techOSS.removeImageOfTags(imagesInfoToBeDelete, function (err) {
+                callback(err);
+            });
+        }else{
+            let imagesInfo = await getPrivateImagesInfo(username);
+            let imagesInfoToBeDelete = [];
+            for(let i = 0; i < uuids.length; i++){
+                let imgInfo = imagesInfo[uuids[i]];
+                delete imagesInfo[uuids[i]];
+                userInfo.capacityused -= 1;
+                userInfo.privateused -= 1;
+                if(imgInfo){
+                    // 删除云端的图片
+                    let object = formImagePath(username, 'public', albumname, imgInfo.name, imgInfo.url);
+                    console.log("delete Img", object);
+                    await ImageClient.delete(object);
+                    // 添加
+                    imagesInfoToBeDelete.push(imgInfo);
+                }
+            }
+            await uploadPrivateImagesInfo(username, imagesInfo);
+            await uploadUserInfo(username, userInfo);
+            techOSS.removeImageOfTags(imagesInfoToBeDelete, function (err) {
+                callback(err);
+            });
+        }
+    } catch (e) {
         callback(e);
     }
 };
@@ -619,4 +883,16 @@ async function uploadPrivateImagesInfo(username, info) {
     }catch (e) {
         console.log(e);
     }
+}
+
+/**
+ * 生成带图片水印的URL
+ * @param username 用户名
+ * @param imgUrl 图片URL
+ * @return {string} 带水印的图片URL
+ */
+function formWatermarkUrl(username, imgUrl) {
+    let text = Buffer.from("@ " + username).toString("base64");
+    let style = '?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_30,text_' + text + ',color_FFFFFF,t_60,g_se,x_10,y_10';
+    return (imgUrl + style);
 }
