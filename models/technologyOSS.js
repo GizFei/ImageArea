@@ -29,6 +29,7 @@ module.exports.getRandomImages = async function(callback){
     try {
         let usersDir = await getDirs("");
         let images = [];
+        let uuids = []; // 标识，使不重复
         let empty = 0;
         for (let i = 0; i < 5; i++) {
             let x = random.integer(0, usersDir.length - 1);
@@ -45,12 +46,13 @@ module.exports.getRandomImages = async function(callback){
             }
             let x2 = random.integer(0, keys.length - 1);
             // console.log("keys", keys[x2]);
-            if(keys[x2]){
+            if(keys[x2] && !uuids.includes(keys[x2])){
                 let infoDetail = info[keys[x2]];
                 infoDetail.messages = await getMessagesOfImage(infoDetail.owner, infoDetail.uuid);
                 if(infoDetail.watermark){
                     infoDetail.url = formWatermarkUrl(infoDetail.owner, infoDetail.url);
                 }
+                uuids.push(infoDetail.uuid);
                 images.push(infoDetail);
             }else{
                 i--;
@@ -452,6 +454,19 @@ async function searchTagByQuery(query){
     } catch (e) {
         console.log("Search tag by query", searchResult);
         return searchResult;
+    }
+}
+
+module.exports.getUserInfo = async function(username, callback){
+    try {
+        let userInfo = await getUserInfo(username);
+        if (userInfo) {
+            callback(null, userInfo.avatar);
+        } else {
+            callback("No User", null);
+        }
+    } catch (e) {
+        callback(e, null);
     }
 }
 

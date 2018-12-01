@@ -15,18 +15,22 @@ router.get('/tagcloud', function (req, res) {
 });
 
 router.get('/objectdetection', function (req, res) {
-    // if(req.isAuthenticated()){
-        res.render('detectionupload');
-    // }else{
-    //     res.redirect('/users/login');
-    // }
+    if(req.isAuthenticated()){
+        techOSS.getUserInfo(req.user.username, function (err, avatar) {
+            res.render('detectionupload', { profile: avatar });
+        });
+    }else{
+        res.redirect('/users/login');
+    }
 });
 router.get('/dusingle', function (req, res) {
-    // if(req.isAuthenticated()){
-    res.render('dusingle');
-    // }else{
-    //     res.redirect('/users/login');
-    // }
+    if(req.isAuthenticated()){
+        techOSS.getUserInfo(req.user.username, function (err, avatar) {
+            res.render('dusingle', { profile: avatar });
+        });
+    }else{
+        res.redirect('/users/login');
+    }
 });
 
 router.post('/objectdetection', function (req, res) {

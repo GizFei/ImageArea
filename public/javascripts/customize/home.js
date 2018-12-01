@@ -36,6 +36,7 @@ window.onload = function(){
                     item.getElementsByTagName("span")[0].textContent = data[i].tags;
                     item.getElementsByTagName("span")[1].textContent = data[i].likes;
                     item.getElementsByTagName("span")[2].innerHTML = "<a href='/access/" + data[i].album.albumurl + "'>" + data[i].album.albumname + "</a>";
+                    item.getElementsByTagName("span")[3].firstChild.href = "http://v.t.sina.com.cn/share/share.php?url=http://www.jb51.net&title=" + data[i].url;
                     if(!data[i].download)
                         $(item.getElementsByTagName("span")[4].firstChild).addClass("disabled");
                     else{
@@ -75,6 +76,7 @@ window.onload = function(){
                     temp.getElementsByTagName("span")[0].textContent = data[i].tags;
                     temp.getElementsByTagName("span")[1].textContent = data[i].likes;
                     temp.getElementsByTagName("span")[2].innerHTML = "<a href='/access/" + data[i].album.albumurl + "'>" + data[i].album.albumname + "</a>";
+                    item.getElementsByTagName("span")[3].firstChild.href = "http://v.t.sina.com.cn/share/share.php?url=http://www.jb51.net&title=" + data[i].url;
                     if(!data[i].download)
                         $(temp.getElementsByTagName("span")[4].firstChild).addClass("disabled");
                     else{
